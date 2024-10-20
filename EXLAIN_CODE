@@ -1,0 +1,281 @@
+Thư viện và enum
+cpp
+Copy code
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <ctime>
+#include <cstdlib>
+#include <fstream>
+#include <map>
+Thư viện iostream: Cho phép sử dụng các luồng nhập/xuất (như cin và cout).
+Thư viện vector: Dùng để làm việc với các mảng động, cụ thể là danh sách bài của từng người chơi.
+Thư viện algorithm: Sử dụng các thuật toán cơ bản như random_shuffle.
+Thư viện ctime: Để lấy thời gian thực, phục vụ cho việc tạo số ngẫu nhiên.
+Thư viện cstdlib: Dùng để khởi tạo các giá trị ngẫu nhiên bằng hàm rand().
+Thư viện fstream: Dùng để làm việc với file (ghi và đọc file).
+Thư viện map: Cung cấp cấu trúc dữ liệu dạng ánh xạ khóa-giá trị, được dùng để lưu trữ lịch sử tay bài yêu thích của người chơi.
+cpp
+Copy code
+enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES };
+enum Rank { TWO = 2, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
+Suit và Rank là các enum đại diện cho chất bài (Clubs, Diamonds, Hearts, Spades) và hạng bài (2 đến Ace). Enum là cách để định nghĩa các hằng số dễ nhớ trong chương trình.
+Cấu trúc Card
+cpp
+Copy code
+struct Card {
+    Rank rank;
+    Suit suit;
+
+    void displayCard() const {
+        string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        cout << ranks[rank - 2] << " of " << suits[suit] << endl;
+    }
+};
+Cấu trúc Card: Đại diện cho một lá bài, với hai thuộc tính chính là rank (hạng bài) và suit (chất bài).
+Hàm displayCard(): Hiển thị lá bài dưới dạng "X of Y", ví dụ "10 of Hearts", bằng cách sử dụng các mảng chuỗi ranks[] và suits[].
+Cấu trúc Player
+cpp
+Copy code
+struct Player {
+    string name;
+    vector<Card> hand;
+    int wins = 0;
+    int losses = 0;
+    int draws = 0;
+    double winrate = 0.0;
+    map<string, int> handHistory;
+
+    void updateWinrate() {
+        int totalGames = wins + losses + draws;
+        if (totalGames > 0) {
+            winrate = (double)wins / totalGames * 100;
+        } else {
+            winrate = 0.0;
+        }
+    }
+
+    void updateFavoriteHand() {
+        string handStr = "";
+        for (const auto& card : hand) {
+            handStr += to_string(card.rank) + "_";
+        }
+        handHistory[handStr]++;
+    }
+
+    string getFavoriteHand() const {
+        string favoriteHand;
+        int maxCount = 0;
+        for (const auto& entry : handHistory) {
+            if (entry.second > maxCount) {
+                maxCount = entry.second;
+                favoriteHand = entry.first;
+            }
+        }
+        return favoriteHand;
+    }
+};
+Cấu trúc Player: Đại diện cho người chơi, bao gồm các thuộc tính như tên, tay bài, số trận thắng, thua, hòa, tỉ lệ thắng, và lịch sử tay bài.
+
+hand: Danh sách các lá bài mà người chơi đang cầm.
+wins, losses, draws: Lưu trữ số lần thắng, thua, hòa.
+winrate: Tỉ lệ thắng của người chơi, tính theo phần trăm.
+handHistory: Lưu lại lịch sử các tay bài mà người chơi đã thắng.
+Hàm updateWinrate(): Tính toán lại tỉ lệ thắng sau mỗi trận đấu.
+
+Hàm updateFavoriteHand(): Cập nhật lịch sử tay bài mỗi khi người chơi thắng.
+
+Hàm getFavoriteHand(): Trả về tay bài người chơi đã thắng nhiều lần nhất.
+
+Cấu trúc GameRecord
+cpp
+Copy code
+struct GameRecord {
+    string winner;
+    string player1;
+    string player2;
+    int result;
+
+    void saveToFile(const string& filename) {
+        ofstream outfile;
+        outfile.open(filename, ios::app);
+        if (outfile.is_open()) {
+            outfile << "Game: " << player1 << " vs " << player2 << "\n";
+            if (result == 1) {
+                outfile << "Winner: " << player1 << "\n";
+            } else if (result == -1) {
+                outfile << "Winner: " << player2 << "\n";
+            } else {
+                outfile << "It's a tie\n";
+            }
+            outfile << "--------------------------\n";
+            outfile.close();
+        }
+    }
+};
+Cấu trúc GameRecord: Đại diện cho thông tin một trận đấu, bao gồm tên người thắng, và kết quả so tài giữa hai người chơi.
+Hàm saveToFile(): Lưu kết quả của mỗi trận đấu vào file game_record.txt.
+Các hàm hỗ trợ
+cpp
+Copy code
+void displayPlayerStats(const Player& player) {
+    cout << "Player: " << player.name << endl;
+    cout << "Wins: " << player.wins << endl;
+    cout << "Losses: " << player.losses << endl;
+    cout << "Draws: " << player.draws << endl;
+    cout << "Winrate: " << player.winrate << "%" << endl;
+    cout << "Favorite hand: " << player.getFavoriteHand() << endl;
+}
+displayPlayerStats(): Hiển thị thông tin về người chơi như tên, số trận thắng, thua, hòa, tỉ lệ thắng, và tay bài ưa thích.
+cpp
+Copy code
+vector<Card> createDeck() {
+    vector<Card> deck;
+    for (int s = CLUBS; s <= SPADES; ++s) {
+        for (int r = TWO; r <= ACE; ++r) {
+            Card card;
+            card.rank = static_cast<Rank>(r);
+            card.suit = static_cast<Suit>(s);
+            deck.push_back(card);
+        }
+    }
+    return deck;
+}
+createDeck(): Tạo ra một bộ bài gồm 52 lá, mỗi lá được xác định bởi hạng và chất.
+cpp
+Copy code
+void shuffleDeck(vector<Card>& deck) {
+    srand(time(0));
+    random_shuffle(deck.begin(), deck.end());
+}
+shuffleDeck(): Xáo bài bằng cách sử dụng hàm random_shuffle().
+cpp
+Copy code
+void dealHand(vector<Card>& deck, Player& player, int& deckIndex) {
+    player.hand.clear();
+    for (int i = 0; i < 5; ++i) {
+        player.hand.push_back(deck[deckIndex++]);
+    }
+}
+dealHand(): Chia 5 lá bài từ bộ bài cho người chơi, bắt đầu từ deckIndex.
+cpp
+Copy code
+void displayHand(const vector<Card>& hand) {
+    for (const auto& card : hand) {
+        card.displayCard();
+    }
+}
+displayHand(): Hiển thị toàn bộ tay bài của người chơi.
+cpp
+Copy code
+int compareHands(const Player& p1, const Player& p2) {
+    int max1 = 0, max2 = 0;
+    for (const auto& card : p1.hand) {
+        if (card.rank > max1) max1 = card.rank;
+    }
+    for (const auto& card : p2.hand) {
+        if (card.rank > max2) max2 = card.rank;
+    }
+
+    if (max1 > max2) return 1;
+    if (max2 > max1) return -1;
+    return 0;
+}
+compareHands(): So sánh tay bài của hai người chơi và trả về kết quả:
+1 nếu người chơi thứ nhất thắng.
+-1 nếu người chơi thứ hai thắng.
+0 nếu hai người hòa.
+cpp
+Copy code
+void displayGameBoard(const vector<Player>& players) {
+    cout << "Game Board:" << endl;
+    for (const auto& player : players) {
+        cout << player.name << "'s hand:" << endl;
+        displayHand(player.hand);
+        cout << "----------------------------" << endl;
+    }
+}
+displayGameBoard(): Hiển thị toàn bộ bảng trò chơi với tay bài của tất cả người chơi.
+Hàm main
+cpp
+Copy code
+int main() {
+    int n;
+    cout << "Enter the number of players: ";
+    cin >> n;
+Nhập số lượng người chơi.
+cpp
+Copy code
+    vector<Player> players(n);
+    for (int i = 0; i < n; ++i) {
+        cout << "Enter name of player " << i + 1 << ": ";
+        cin >> players[i].name;
+    }
+Khởi tạo danh sách người chơi và yêu cầu nhập tên của từng người.
+cpp
+Copy code
+    char replayChoice;
+    do {
+        vector<Card> deck = createDeck();
+        shuffleDeck(deck);
+        int deckIndex = 0;
+        for (int i = 0; i < n; ++i) {
+            dealHand(deck, players[i], deckIndex);
+        }
+        displayGameBoard(players);
+Khởi tạo bộ bài và chia bài cho người chơi trong mỗi lần chơi lại.
+cpp
+Copy code
+        Player* winner = &players[0];
+        bool tie = false;
+
+        GameRecord record;
+
+        for (int i = 1; i < n; ++i) {
+            int result = compareHands(*winner, players[i]);
+            if (result == -1) {
+                winner = &players[i];
+                tie = false;
+                record.winner = players[i].name;
+            } else if (result == 0) {
+                tie = true;
+            }
+            record.player1 = players[0].name;
+            record.player2 = players[i].name;
+            record.result = result;
+        }
+Tìm người thắng cuộc hoặc quyết định trận hòa.
+cpp
+Copy code
+        if (!tie) {
+            cout << winner->name << " wins!" << endl;
+            winner->wins++;
+            winner->updateFavoriteHand();
+            record.saveToFile("game_record.txt");
+        } else {
+            cout << "It's a tie!" << endl;
+            for (int i = 0; i < n; ++i) {
+                players[i].draws++;
+            }
+        }
+
+        cout << endl << "Statistics:" << endl;
+        for (auto& player : players) {
+            player.updateWinrate();
+            displayPlayerStats(player);
+            cout << endl;
+        }
+Cập nhật thông tin người thắng, tay bài ưa thích và lưu kết quả vào file.
+cpp
+Copy code
+        cout << "Do you want to play again? (y/n): ";
+        cin >> replayChoice;
+
+    } while (replayChoice == 'y' || replayChoice == 'Y');
+
+    cout << "Thank you for playing!" << endl;
+
+    return 0;
+}
+Vòng lặp chơi lại: Người chơi được hỏi có muốn tiếp tục chơi không, nếu có thì trò chơi được lặp lại.
