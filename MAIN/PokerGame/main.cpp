@@ -7,7 +7,7 @@ int main()
 {   
     //---------------------------INITALIZE---------------------------
     Game game;
-
+    game.setupPlayers();
     //---------------------------INITALIZE---------------------------
 
     while (game.running())

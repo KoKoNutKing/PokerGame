@@ -5,6 +5,7 @@
 void Game::initVariables()
 {
 	this->window = nullptr;
+	
 }
 
 void Game::initWindow()
@@ -13,9 +14,14 @@ void Game::initWindow()
 	this->videoMode.width = 800;
 	//this->videoMode.getDesktopMode;
 	this->window = new sf::RenderWindow(sf::VideoMode(800, 600), "Poker", sf::Style::Default);
+	this->deck.printDeck();
+
 	
 }
+//Objects
 
+
+//Con/destrusctor
 Game::Game()
 {
 	this->initVariables();
@@ -46,15 +52,36 @@ void Game::pollEvents()
 		}
 	}
 }
+//Something about game setup
+void Game::setupPlayers()
+{
+	Player pl1("KoKoNut01");
+	Player pl2("KoKoNut02");
+	table.addPlayer(pl1);
+	table.addPlayer(pl2);
+
+
+
+}
+
+void Game::updateMousePos()
+{
+	//relative to window
+	this->mousePos = sf::Mouse::getPosition(*this->window);
+
+}
 
 void Game::update()
 {
 	this->pollEvents();
+	//update mouse pos
+	this->updateMousePos();
 }
 
 void Game::display()
 {
-	this->window->clear(sf::Color(0, 0, 0, 0));
-
+	this->window->clear();
+	//draw game objects here
+	this->table.drawTable(*this->window);
 	this->window->display();
 }

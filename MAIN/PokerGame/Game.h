@@ -1,7 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <vector>
+
+#include "Deck.h"
+#include "Player.h"
+#include "Table.h"
 
 //Game engine.
 //Wrapper class.
@@ -15,7 +21,14 @@ private:
 	sf::VideoMode videoMode;
 	sf::Event event;
 
+	//Mouse position
+	sf::Vector2i mousePos;
+	//Objects
+	std::vector<Player> players;
+	Table table;
+	Deck deck;
 
+	//private functions
 	void initVariables();
 	void initWindow();
 
@@ -30,6 +43,10 @@ public:
 
 	//Fun
 	void pollEvents();
+	void setupPlayers();
+
+
+	void updateMousePos();
 	void update();
 	void display();
 };
