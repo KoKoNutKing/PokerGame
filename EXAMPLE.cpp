@@ -1,11 +1,10 @@
 #include <iostream>
-#include <vector>
 #include <algorithm>
 #include <ctime>
-#include <string>
 #include <cstdlib>
 #include <fstream>
 #include <map>
+#include <random>
 
 using namespace std;
 
@@ -33,7 +32,7 @@ struct Card {
 // Cấu trúc cho tài khoản người chơi
 struct Player {
     string name;
-    vector<Card> hand;
+    Card hand[5];  // Fixed array for player's hand of 5 cards
     int wins = 0;
     int losses = 0;
     int draws = 0;
@@ -73,12 +72,13 @@ struct GameRecord {
     string player2;
     int result;
 
-    void saveToFile(const string& filename, const vector<Player>& players) {
+    void saveToFile(const string& filename, const Player players[], int numPlayers) {
         ofstream outfile(filename, ios::app);
         if (outfile.is_open()) {
             outfile << "Game: " << player1 << " vs " << player2 << "\n";
             outfile << (result == 1 ? "Winner: " + player1 : result == -1 ? "Winner: " + player2 : "It's a tie") << "\n";
-            for (const auto& player : players) {
+            for (int i = 0; i < numPlayers; ++i) {
+                const Player& player = players[i];
                 outfile << player.name << " | Wins: " << player.wins << ", Losses: " << player.losses
                         << ", Draws: " << player.draws << ", Winrate: " << player.winrate << "%\n";
             }
@@ -98,49 +98,45 @@ void displayPlayerStats(const Player& player) {
     cout << "Favorite hand: " << player.getFavoriteHand() << endl;
 }
 
-// Khởi tạo bộ bài gồm 52 lá
-vector<Card> createDeck() {
-    vector<Card> deck;
+// Khởi tạo bộ bài gồm 52 lá sử dụng mảng cố định
+void createDeck(Card deck[52]) {
+    int index = 0;
     for (int s = CLUBS; s <= SPADES; ++s) {
         for (int r = TWO; r <= ACE; ++r) {
-            Card card;
-            card.rank = static_cast<Rank>(r);
-            card.suit = static_cast<Suit>(s);
-            deck.push_back(card);
+            deck[index].rank = static_cast<Rank>(r);
+            deck[index].suit = static_cast<Suit>(s);
+            index++;
         }
     }
-    return deck;
 }
 
-// Xáo bài
-void shuffleDeck(vector<Card>& deck) {
-    srand(time(0));
-    random_shuffle(deck.begin(), deck.end());
+// Xáo bài sử dụng mảng cố định
+void shuffleDeck(Card deck[52]) {
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(deck, deck + 52, g);
 }
 
-// Chia 5 lá bài cho mỗi người chơi
-void dealHand(vector<Card>& deck, Player& player, int& deckIndex) {
-    player.hand.clear();  // Xóa tay bài cũ trước khi chia lại
+// Chia 5 lá bài cho mỗi người chơi sử dụng mảng cố định
+void dealHand(Card deck[52], Player& player, int& deckIndex) {
     for (int i = 0; i < 5; ++i) {
-        player.hand.push_back(deck[deckIndex++]);
+        player.hand[i] = deck[deckIndex++];
     }
 }
 
 // Hiển thị bài của người chơi
-void displayHand(const vector<Card>& hand) {
-    for (const auto& card : hand) {
-        card.displayCard();
+void displayHand(const Card hand[5]) {
+    for (int i = 0; i < 5; ++i) {
+        hand[i].displayCard();
     }
 }
 
 // So sánh bộ bài của người chơi (dựa vào lá bài lớn nhất)
 int compareHands(const Player& p1, const Player& p2) {
     int max1 = 0, max2 = 0;
-    for (const auto& card : p1.hand) {
-        if (card.rank > max1) max1 = card.rank;
-    }
-    for (const auto& card : p2.hand) {
-        if (card.rank > max2) max2 = card.rank;
+    for (int i = 0; i < 5; ++i) {
+        if (p1.hand[i].rank > max1) max1 = p1.hand[i].rank;
+        if (p2.hand[i].rank > max2) max2 = p2.hand[i].rank;
     }
 
     if (max1 > max2) return 1;
@@ -149,11 +145,11 @@ int compareHands(const Player& p1, const Player& p2) {
 }
 
 // Hiển thị bảng trò chơi
-void displayGameBoard(const vector<Player>& players) {
+void displayGameBoard(const Player players[], int numPlayers) {
     cout << "Game Board:" << endl;
-    for (const auto& player : players) {
-        cout << player.name << "'s hand:" << endl;
-        displayHand(player.hand);
+    for (int i = 0; i < numPlayers; ++i) {
+        cout << players[i].name << "'s hand:" << endl;
+        displayHand(players[i].hand);
         cout << "----------------------------" << endl;
     }
 }
@@ -163,7 +159,7 @@ int main() {
     cout << "Enter the number of players: ";
     cin >> n;
 
-    vector<Player> players(n);
+    Player players[n];
     for (int i = 0; i < n; ++i) {
         cout << "Enter name of player " << i + 1 << ": ";
         cin >> players[i].name;
@@ -172,7 +168,8 @@ int main() {
     char replayChoice;
     do {
         // Khởi tạo bộ bài và xáo bài
-        vector<Card> deck = createDeck();
+        Card deck[52];
+        createDeck(deck);
         shuffleDeck(deck);
 
         int deckIndex = 0;
@@ -183,7 +180,7 @@ int main() {
         }
 
         // Hiển thị bảng trò chơi
-        displayGameBoard(players);
+        displayGameBoard(players, n);
 
         // Tìm người thắng
         Player* winner = &players[0];
@@ -209,7 +206,7 @@ int main() {
             cout << winner->name << " wins!" << endl;
             winner->wins++;
             winner->updateFavoriteHand();
-            record.saveToFile("game_record.txt", players);
+            record.saveToFile("game_record.txt", players, n);
         } else {
             cout << "It's a tie!" << endl;
             for (int i = 0; i < n; ++i) {
@@ -219,9 +216,9 @@ int main() {
 
         // Cập nhật tỉ lệ thắng cho từng người chơi
         cout << endl << "Statistics:" << endl;
-        for (auto& player : players) {
-            player.updateWinrate();
-            displayPlayerStats(player);
+        for (int i = 0; i < n; ++i) {
+            players[i].updateWinrate();
+            displayPlayerStats(players[i]);
             cout << endl;
         }
 
