@@ -1,0 +1,97 @@
+Mã giả
+Khởi tạo các hằng số và cấu trúc
+Định nghĩa Chất: CLUBS, DIAMONDS, HEARTS, SPADES
+
+Định nghĩa Hạng: Từ TWO đến ACE
+
+Định nghĩa Cấu trúc Lá bài (Card):
+
+Hạng: rank
+Chất: suit
+Hàm displayCard: Hiển thị hạng và chất của lá bài
+Định nghĩa Cấu trúc Người chơi (Player):
+
+Tên: name
+Tay bài: danh sách các đối tượng Card
+Số trận thắng, thua, hòa, và tỷ lệ thắng: các giá trị số nguyên
+Lịch sử tay bài: bản đồ để theo dõi các tay bài ưa thích
+Hàm updateWinrate: Tính toán tỷ lệ thắng dựa trên số trận đã chơi
+Hàm updateFavoriteHand: Theo dõi tần suất tay bài hiện tại
+Hàm getFavoriteHand: Trả về tay bài xuất hiện nhiều nhất
+Định nghĩa Cấu trúc Bảng điểm (GameRecord):
+
+Người thắng, người chơi 1, người chơi 2: các chuỗi
+Kết quả: giá trị số nguyên
+Hàm saveToFile: Ghi kết quả trận đấu vào tệp
+Các hàm hỗ trợ
+displayPlayerStats: Hiển thị thống kê người chơi (thắng, thua, hòa, tỷ lệ thắng, tay bài ưa thích)
+
+createDeck:
+
+Khởi tạo danh sách deck rỗng
+Với mỗi chất bài trong danh sách chất bài:
+Với mỗi hạng bài trong danh sách hạng bài:
+Tạo một lá bài với hạng và chất hiện tại
+Thêm lá bài vào deck
+Trả về deck
+shuffleDeck:
+
+Xáo trộn ngẫu nhiên thứ tự các lá bài trong deck
+dealHand:
+
+Xóa tay bài hiện tại của người chơi
+Với mỗi lá bài trong 5 lá:
+Thêm lá bài từ deck vào tay bài của người chơi
+Tăng chỉ số deckIndex lên
+displayHand:
+
+Với mỗi lá bài trong tay bài của người chơi:
+Gọi hàm displayCard để hiển thị hạng và chất của lá bài
+compareHands:
+
+Tìm hạng bài lớn nhất trong tay bài của người chơi 1
+Tìm hạng bài lớn nhất trong tay bài của người chơi 2
+Trả về 1 nếu người chơi 1 có hạng bài lớn hơn, -1 nếu người chơi 2 có hạng bài lớn hơn, hoặc 0 nếu hòa
+displayGameBoard:
+
+Với mỗi người chơi:
+Hiển thị tên người chơi và gọi displayHand để hiển thị các lá bài của họ
+Hàm chính
+Yêu cầu người dùng nhập số lượng người chơi
+
+Với mỗi người chơi:
+
+Yêu cầu nhập tên người chơi
+Khởi tạo đối tượng Player và lưu vào danh sách players
+Lặp vòng chơi khi replayChoice là "y" hoặc "Y":
+
+Tạo và xáo trộn bộ bài
+
+Khởi tạo deckIndex là 0
+
+Với mỗi người chơi trong players:
+
+Chia tay bài gồm 5 lá cho người chơi
+Hiển thị bảng trò chơi (tay bài của tất cả người chơi)
+
+Khởi tạo winner là người chơi đầu tiên và cờ tie là false
+
+Với mỗi người chơi còn lại:
+
+So sánh tay bài của winner và người chơi hiện tại
+Cập nhật winner nếu người chơi hiện tại có tay bài mạnh hơn
+Đặt tie là true nếu các tay bài bằng nhau
+Nếu không có hòa:
+
+Hiển thị tên người thắng
+Tăng số trận thắng của người thắng và cập nhật lịch sử tay bài
+Lưu bảng điểm trận đấu vào tệp
+Nếu hòa:
+
+Hiển thị "It's a tie!"
+Tăng số trận hòa cho mỗi người chơi
+Hiển thị thống kê người chơi đã được cập nhật
+
+Yêu cầu người chơi chọn chơi lại (cập nhật replayChoice)
+
+Hiển thị thông báo "Thank you for playing!" và kết thúc chương trình

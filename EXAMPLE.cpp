@@ -2,11 +2,16 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <string>
 #include <cstdlib>
 #include <fstream>
 #include <map>
 
 using namespace std;
+
+// Fixed arrays for suits and ranks (static content)
+const string SUITS[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+const string RANKS[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
 // Khai báo các chất bài
 enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES };
@@ -21,9 +26,7 @@ struct Card {
 
     // Hiển thị lá bài
     void displayCard() const {
-        string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
-        string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
-        cout << ranks[rank - 2] << " of " << suits[suit] << endl;
+        cout << RANKS[rank - 2] << " of " << SUITS[suit] << endl;
     }
 };
 
@@ -39,15 +42,11 @@ struct Player {
 
     void updateWinrate() {
         int totalGames = wins + losses + draws;
-        if (totalGames > 0) {
-            winrate = (double)wins / totalGames * 100;
-        } else {
-            winrate = 0.0;
-        }
+        winrate = totalGames > 0 ? (static_cast<double>(wins) / totalGames * 100) : 0.0;
     }
 
     void updateFavoriteHand() {
-        string handStr = "";
+        string handStr;
         for (const auto& card : hand) {
             handStr += to_string(card.rank) + "_";
         }
@@ -74,17 +73,14 @@ struct GameRecord {
     string player2;
     int result;
 
-    void saveToFile(const string& filename) {
-        ofstream outfile;
-        outfile.open(filename, ios::app);
+    void saveToFile(const string& filename, const vector<Player>& players) {
+        ofstream outfile(filename, ios::app);
         if (outfile.is_open()) {
             outfile << "Game: " << player1 << " vs " << player2 << "\n";
-            if (result == 1) {
-                outfile << "Winner: " << player1 << "\n";
-            } else if (result == -1) {
-                outfile << "Winner: " << player2 << "\n";
-            } else {
-                outfile << "It's a tie\n";
+            outfile << (result == 1 ? "Winner: " + player1 : result == -1 ? "Winner: " + player2 : "It's a tie") << "\n";
+            for (const auto& player : players) {
+                outfile << player.name << " | Wins: " << player.wins << ", Losses: " << player.losses
+                        << ", Draws: " << player.draws << ", Winrate: " << player.winrate << "%\n";
             }
             outfile << "--------------------------\n";
             outfile.close();
@@ -213,7 +209,7 @@ int main() {
             cout << winner->name << " wins!" << endl;
             winner->wins++;
             winner->updateFavoriteHand();
-            record.saveToFile("game_record.txt");
+            record.saveToFile("game_record.txt", players);
         } else {
             cout << "It's a tie!" << endl;
             for (int i = 0; i < n; ++i) {
