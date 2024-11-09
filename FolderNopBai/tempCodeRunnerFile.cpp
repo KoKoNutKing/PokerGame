@@ -1,0 +1,1 @@
+g++ main.cpp game.cpp Card.cpp Deck.cpp Player.cpp -o game
