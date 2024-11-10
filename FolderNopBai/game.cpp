@@ -15,6 +15,7 @@ void Game::initGame() {
 }
 
 void Game::dealHand(Deck deck, Player& player, int& deckIndex) {
+    player.hand.resize(5); //depend on game mode
     for (int i = 0; i < 5; ++i) {
         player.hand[i] = deck.cards[deckIndex++];
     }
@@ -30,15 +31,26 @@ void Game::displayGameBoard() {
 }
 
 int Game::compareHands(const Player& p1, const Player& p2) {
-    int max1 = 0, max2 = 0;
-    for (int i = 0; i < 5; ++i) {
-        if (p1.hand[i].rank > max1) max1 = p1.hand[i].rank;
-        if (p2.hand[i].rank > max2) max2 = p2.hand[i].rank;
+    std::pair<int, int> hand1 = p1.evaluateHand();
+    std::pair<int, int> hand2 = p2.evaluateHand();
+      // First compare the 'first' value (typically the main hand rank)
+    if (hand1.first > hand2.first) {
+        return 1;
+    }
+    if (hand1.first < hand2.first) {
+        return -1;
     }
 
-    if (max1 > max2) return 1;
-    if (max2 > max1) return -1;
-    return 0;  // Tie
+    // If 'first' values are the same, compare the 'second' value (e.g., tie-breaker)
+    if (hand1.second > hand2.second) {
+        return 1;
+    }
+    if (hand1.second < hand2.second) {
+        return -1;
+    }
+
+    // If both are equal, return 0 (tie)
+    return 0;
 }
 
 void Game::determineAndDisplayWinner() {
