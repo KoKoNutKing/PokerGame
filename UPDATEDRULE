@@ -1,0 +1,173 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <random>
+#include <map>
+using namespace std;
+
+enum Suit { CLUBS, DIAMONDS, HEARTS, SPADES };
+enum Rank { TWO = 2, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEEN, KING, ACE };
+
+struct Card {
+    Rank rank;
+    Suit suit;
+};
+
+struct Player {
+    string username;
+    vector<Card> hand;
+    int wins = 0;
+    int draws = 0;
+    double winrate = 0.0;
+};
+
+vector<Card> createDeck() {
+    vector<Card> deck;
+    for (int s = CLUBS; s <= SPADES; ++s) {
+        for (int r = TWO; r <= ACE; ++r) {
+            deck.push_back({static_cast<Rank>(r), static_cast<Suit>(s)});
+        }
+    }
+    return deck;
+}
+
+void shuffleDeck(vector<Card>& deck) {
+    random_device rd;
+    mt19937 g(rd());
+    shuffle(deck.begin(), deck.end(), g);
+}
+
+void dealCards(vector<Card>& deck, vector<Player>& players) {
+    int deckIndex = 0;
+    for (auto& player : players) {
+        player.hand.clear();  // Xóa tay bài cũ trước khi chia bài mới
+        for (int i = 0; i < 5; ++i) {
+            player.hand.push_back(deck[deckIndex++]);
+        }
+    }
+}
+
+void displayHand(const vector<Card>& hand) {
+    string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+    for (const auto& card : hand) {
+        cout << ranks[card.rank - 2] << " of " << suits[card.suit] << endl;
+    }
+}
+
+int evaluateHand(const vector<Card>& hand) {
+    map<int, int> rankCount;
+    map<int, int> suitCount;
+
+    for (const auto& card : hand) {
+        rankCount[card.rank]++;
+        suitCount[card.suit]++;
+    }
+
+    bool isFlush = (suitCount.size() == 1);
+    bool isStraight = (rankCount.size() == 5 && (--rankCount.end())->first - rankCount.begin()->first == 4);
+
+    if (isFlush && isStraight) return 9; // Straight Flush
+    if (rankCount.size() == 2 && (rankCount.begin()->second == 4 || (++rankCount.begin())->second == 4)) return 8; // Four of a Kind
+    if (rankCount.size() == 2) return 7; // Full House
+    if (isFlush) return 6; // Flush
+    if (isStraight) return 5; // Straight
+    if (rankCount.size() == 3) return 4; // Three of a Kind
+    if (rankCount.size() == 4) return 2; // One Pair
+    return 1; // High Card
+}
+
+
+int compareHands(const vector<Card>& hand1, const vector<Card>& hand2) {
+    int rank1 = evaluateHand(hand1);
+    int rank2 = evaluateHand(hand2);
+
+    if (rank1 > rank2) return 1;
+    if (rank2 > rank1) return -1;
+    return 0; // Tie
+}
+
+Player* determineWinner(vector<Player>& players) {
+    Player* winner = &players[0];
+    bool isTie = false;
+
+    for (size_t i = 1; i < players.size(); ++i) {
+        int result = compareHands(winner->hand, players[i].hand);
+        if (result == -1) {
+            winner = &players[i];
+            isTie = false;
+        } else if (result == 0) {
+            isTie = true;
+        }
+    }
+
+    return isTie ? nullptr : winner;
+}
+
+void updateWinrate(Player& player) {
+    int totalGames = player.wins + player.draws;
+    player.winrate = totalGames > 0 ? (double)player.wins / totalGames * 100 : 0.0;
+}
+
+void printPlayerStatistics(const vector<Player>& players) {
+    cout << "\nPlayer Statistics:\n";
+    for (const auto& player : players) {
+        cout << player.username << ": Wins = " << player.wins
+             << ", Draws = " << player.draws
+             << ", Winrate = " << player.winrate << "%\n";
+    }
+}
+
+int main() {
+    vector<Player> players;
+    int numPlayers;
+    char playAgain;
+
+    cout << "Enter the number of players: ";
+    cin >> numPlayers;
+
+    for (int i = 0; i < numPlayers; ++i) {
+        Player player;
+        cout << "Enter username for player " << i + 1 << ": ";
+        cin >> player.username;
+        players.push_back(player);
+    }
+
+    do {
+        vector<Card> deck = createDeck();
+        shuffleDeck(deck);
+        dealCards(deck, players);
+
+        cout << "\nHands dealt:\n";
+        for (auto& player : players) {
+            cout << player.username << "'s hand:\n";
+            displayHand(player.hand);
+            cout << "----------------------------\n";
+        }
+
+        Player* winner = determineWinner(players);
+
+        if (winner) {
+            cout << winner->username << " wins!\n";
+            winner->wins++;
+        } else {
+            cout << "It's a tie!\n";
+            for (auto& player : players) {
+                player.draws++;
+            }
+        }
+
+        for (auto& player : players) {
+            updateWinrate(player);
+        }
+
+        printPlayerStatistics(players);
+
+        cout << "Do you want to play again? (y/n): ";
+        cin >> playAgain;
+
+    } while (playAgain == 'y' || playAgain == 'Y');
+
+    cout << "Thank you for playing!\n";
+    return 0;
+}
