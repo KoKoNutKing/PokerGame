@@ -2,5 +2,5 @@
 #include "Card.h"
     
 void Card::displayCard() const {
-    std::cout << RANKS[rank - 2] << " of " << SUITS[suit] << std::endl;
+    std::cout << RANKS[rank - 2] << " of " << SUITS[suit] << " ";
 }

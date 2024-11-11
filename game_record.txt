@@ -64,3 +64,9 @@ Winner: 1
 2 | Wins: 1, Losses: 0, Draws: 2, Winrate: 33.3333%
 3 | Wins: 2, Losses: 0, Draws: 2, Winrate: 50%
 --------------------------
+Game: a vs c
+Winner: a
+a | Wins: 1, Losses: 0, Draws: 0, Winrate: 0%
+b | Wins: 0, Losses: 0, Draws: 0, Winrate: 0%
+c | Wins: 0, Losses: 0, Draws: 0, Winrate: 0%
+--------------------------

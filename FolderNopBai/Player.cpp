@@ -15,7 +15,9 @@ void Player::displayHand() {
     sortHand();
     for (int i = 0; i < 5; ++i) {
         hand[i].displayCard();
+        std::cout << "| ";
     }
+    std::cout << std::endl;
 }
 
 std::pair<int, int> Player::evaluateHand() const {
@@ -55,7 +57,7 @@ std::pair<int, int> Player::evaluateHand() const {
         return {2, vec[0].first}; // One Pair
     }
 
-    return {1, vec[0].first}; // High Card
+    return {1, vec[-1].first}; // High Card
 }
 
 

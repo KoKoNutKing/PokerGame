@@ -4,7 +4,11 @@
 
 using namespace std;
 
-//to run use this "g++ main.cpp game.cpp Card.cpp Deck.cpp Player.cpp -o game"
+/* to run use this
+g++ main.cpp game.cpp Card.cpp Deck.cpp Player.cpp -o game
+.\main 
+
+*/
 
 int main() {
     Game game;
