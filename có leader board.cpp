@@ -89,23 +89,32 @@ int evaluate_hand(const vector<card_t>& hand) {
 }
 
 optional<player_t*> determine_winner(vector<player_t>& players) {
-    player_t* winner = &players[0];
-    bool is_tie = false;
+    vector<player_t*> candidates;
+    int highest_rank = evaluate_hand(players[0].hand);
 
     for (auto& player : players) {
-        if (&player != winner) {
-            int result = evaluate_hand(player.hand) - evaluate_hand(winner->hand);
-            if (result > 0) {
-                winner = &player;
-                is_tie = false;
-            } else if (result == 0) {
-                is_tie = true;
-            }
+        int player_rank = evaluate_hand(player.hand);
+
+        if (player_rank > highest_rank) {
+            highest_rank = player_rank;
+            candidates.clear();
+            candidates.push_back(&player);
+        } else if (player_rank == highest_rank) {
+            candidates.push_back(&player);
         }
     }
 
-    return is_tie ? nullopt : optional<player_t*>{winner};
+    // Nếu có nhiều người có cùng hạng bài, chọn ngẫu nhiên
+    if (candidates.size() > 1) {
+        random_device rd;
+        mt19937 g(rd());
+        uniform_int_distribution<int> dist(0, candidates.size() - 1);
+        return candidates[dist(g)];
+    }
+
+    return candidates.empty() ? nullopt : optional<player_t*>{candidates[0]};
 }
+
 
 void update_win_rate(player_t& player) {
     int total_games = player.wins + player.draws + player.losses;
