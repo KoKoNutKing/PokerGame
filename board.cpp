@@ -47,6 +47,17 @@ void shuffle_players(vector<player_t>& players) {
     shuffle(players.begin(), players.end(), g);
 }
 
+void sort_player_hand(player_t& player) {
+    // Sắp xếp bài ngửa
+    sort(player.faceup_cards.begin(), player.faceup_cards.end(), [](const card_t& a, const card_t& b) {
+        if (a.rank == b.rank) {
+            return a.suit < b.suit; // Nếu rank giống nhau, sắp xếp theo suit
+        }
+        return a.rank < b.rank; // Sắp xếp theo rank
+    });
+
+    // Bài úp không cần sắp xếp vì chỉ có 1 lá
+}
 
 void deal_cards(vector<card_t>& deck, vector<player_t>& players) {
     int deck_index = 0;
@@ -69,8 +80,12 @@ void deal_cards(vector<card_t>& deck, vector<player_t>& players) {
         for (int i = player.faceup_cards.size(); i < 4; ++i) {
             player.faceup_cards.push_back(deck[deck_index++]);
         }
+
+        // Sắp xếp bài của người chơi sau khi chia
+        sort_player_hand(player);
     }
 }
+
 
 
 void display_hand(const player_t& player) {
