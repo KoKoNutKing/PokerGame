@@ -14,20 +14,20 @@
 #include "Deck.h"
 
 struct Game {
-    std::vector<Player> players;
-    Deck deck;
+    std::vector<Player> players; // nguoi choi
+    Deck deck; //ban choi
 
-    void initGame();
-    void dealHand(Deck deck, Player& player, int& deckIndex);
-    void displayGameBoard();
+    void initGame(); //khoi tao game
+    void dealHand(Deck deck, Player& player, int& deckIndex); //chia bai
+    void displayGameBoard(); //bang
 
-    int compareHands(const Player& p1, const Player& p2);
-    void determineAndDisplayWinner();
+    int compareHands(const Player& p1, const Player& p2); //so sanh
+    void determineAndDisplayWinner();// chi ra nguoi thang
 
-    void displayPlayerStats(const Player& player);
-    void displayLeaderboard();
+    void displayPlayerStats(const Player& player); //thong ke
+    void displayLeaderboard();//bang thong ke
 
-    void startGame();
+    void startGame(); //bat dau choi
 };
 
 
