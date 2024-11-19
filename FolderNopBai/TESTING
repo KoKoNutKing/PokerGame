@@ -1,0 +1,155 @@
+#include <iostream>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+#include <algorithm>
+
+using namespace std;
+
+enum Suit { clubs, diamonds, hearts, spades };
+enum Rank { two = 2, three, four, five, six, seven, eight, nine, ten, jack, queen, king, ace };
+
+struct Card {
+    Rank rank;
+    Suit suit;
+};
+
+struct Player {
+    string name;
+    vector<Card> faceUp;
+    int winCount = 0;
+    int drawCount = 0;
+    int lossCount = 0;
+    float winRate = 0.0;
+};
+
+vector<Card> generateDeck() {
+    vector<Card> deck;
+    for (int s = clubs; s <= spades; s++) {
+        for (int r = two; r <= ace; r++) {
+            deck.push_back({static_cast<Rank>(r), static_cast<Suit>(s)});
+        }
+    }
+    return deck;
+}
+
+void manualShuffle(vector<Card>& deck) {
+    srand(time(0));
+    for (int i = 0; i < deck.size(); i++) {
+        int j = rand() % deck.size();
+        swap(deck[i], deck[j]);
+    }
+}
+
+void distributeCards(vector<Card>& deck, vector<Player>& players) {
+    for (auto& player : players) {
+        player.faceUp.clear();
+        for (int i = 0; i < 4; i++) { // Distribute 4 face-up cards
+            player.faceUp.push_back(deck.back());
+            deck.pop_back();
+        }
+    }
+}
+
+void showHand(const Player& player) {
+    const string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+    const string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+
+    cout << "Face-up cards:\n";
+    for (const auto& card : player.faceUp) {
+        cout << ranks[card.rank - 2] << " of " << suits[card.suit] << "\n";
+    }
+}
+
+int handScore(const Player& player) {
+    int score = 0;
+    for (const auto& card : player.faceUp) {
+        score += card.rank;
+    }
+    return score;
+}
+
+Player* findWinner(vector<Player>& players) {
+    Player* bestPlayer = nullptr;
+    int highestScore = 0;
+    for (auto& player : players) {
+        int score = handScore(player);
+        if (score > highestScore) {
+            highestScore = score;
+            bestPlayer = &player;
+        }
+    }
+    return bestPlayer;
+}
+
+void updateWinRate(Player& player) {
+    int totalGames = player.winCount + player.drawCount + player.lossCount;
+    if (totalGames > 0) {
+        player.winRate = (static_cast<float>(player.winCount) / totalGames) * 100;
+    }
+}
+
+void printPlayerStatistics(const vector<Player>& players) {
+    cout << "\nPlayer Statistics:\n";
+    for (const auto& player : players) {
+        cout << player.name << ": Wins = " << player.winCount
+             << ", Draws = " << player.drawCount
+             << ", Losses = " << player.lossCount
+             << ", Win Rate = " << player.winRate << "%\n";
+    }
+}
+
+int main() {
+    vector<Player> players;
+    int playerCount;
+    char playAgain;
+
+    cout << "Number of players: ";
+    cin >> playerCount;
+
+    for (int i = 0; i < playerCount; i++) {
+        Player player;
+        cout << "Enter name for player " << (i + 1) << ": ";
+        cin >> player.name;
+        players.push_back(player);
+    }
+
+    do {
+        vector<Card> deck = generateDeck();
+        manualShuffle(deck);
+        distributeCards(deck, players);
+
+        cout << "\nHands dealt:\n";
+        for (auto& player : players) {
+            cout << player.name << "'s hand:\n";
+            showHand(player);
+            cout << "----------------------------\n";
+        }
+
+        Player* winner = findWinner(players);
+        if (winner) {
+            cout << winner->name << " wins!\n";
+            winner->winCount++;
+            for (auto& player : players) {
+                if (&player != winner) player.lossCount++;
+            }
+        } else {
+            cout << "It's a draw!\n";
+            for (auto& player : players) player.drawCount++;
+        }
+
+        for (auto& player : players) {
+            updateWinRate(player);
+        }
+
+        printPlayerStatistics(players);
+
+        cout << "Do you want to play another round? (y/n): ";
+        cin >> playAgain;
+    } while (playAgain == 'y' || playAgain == 'Y');
+
+    cout << "Thank you for playing!\n";
+    return 0;
+}
+
+
