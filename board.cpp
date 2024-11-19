@@ -41,7 +41,7 @@ void shuffle_deck(vector<card_t>& deck) {
 }
 
 // Shuffle players order
-void shuffle_players(vector<player_t>& players) {
+void shuffle_players(vector<player_t>& players) { // co se xoa
     mt19937 g(random_device{}());
     shuffle(players.begin(), players.end(), g);
 }
@@ -74,7 +74,6 @@ void display_shared_cards(const vector<card_t>& shared_cards) {
     const string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     const string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
-    cout << "Shared Facedown Cards:\n";
     for (const auto& card : shared_cards) {
         cout << ranks[card.rank - 2] << " of " << suits[card.suit] << "\n";
     }
@@ -86,7 +85,6 @@ void display_hand(const player_t& player) {
     const string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     const string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
-    cout << "Faceup Cards:\n";
     for (const auto& card : player.faceup_cards) {
         cout << ranks[card.rank - 2] << " of " << suits[card.suit] << "\n";
     }
@@ -174,7 +172,7 @@ int main() {
     do {
         auto deck = create_deck();
         shuffle_deck(deck);
-        shuffle_players(players);
+        //shuffle_players(players);
         deal_cards(deck, players, shared_cards);
 
         cout << "\nShared Facedown Cards:\n";
