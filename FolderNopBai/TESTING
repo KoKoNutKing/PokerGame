@@ -16,7 +16,7 @@ struct Card {
 
 struct Player {
     string name;
-    vector<Card> faceUp;
+    vector<Card> hand; // Tất cả 5 lá bài trong tay
     int winCount = 0;
     int drawCount = 0;
     int lossCount = 0;
@@ -43,9 +43,9 @@ void manualShuffle(vector<Card>& deck) {
 
 void distributeCards(vector<Card>& deck, vector<Player>& players) {
     for (auto& player : players) {
-        player.faceUp.clear();
-        for (int i = 0; i < 4; i++) { // Distribute 4 face-up cards
-            player.faceUp.push_back(deck.back());
+        player.hand.clear(); // Dọn sạch bài trước khi chia
+        for (int i = 0; i < 5; i++) { // Chia 5 lá bài
+            player.hand.push_back(deck.back());
             deck.pop_back();
         }
     }
@@ -55,15 +55,15 @@ void showHand(const Player& player) {
     const string ranks[] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
     const string suits[] = {"Clubs", "Diamonds", "Hearts", "Spades"};
 
-    cout << "Face-up cards:\n";
-    for (const auto& card : player.faceUp) {
+    cout << "Hand:\n";
+    for (const auto& card : player.hand) {
         cout << ranks[card.rank - 2] << " of " << suits[card.suit] << "\n";
     }
 }
 
 int handScore(const Player& player) {
     int score = 0;
-    for (const auto& card : player.faceUp) {
+    for (const auto& card : player.hand) {
         score += card.rank;
     }
     return score;
@@ -151,5 +151,3 @@ int main() {
     cout << "Thank you for playing!\n";
     return 0;
 }
-
-
