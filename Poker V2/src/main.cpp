@@ -1,5 +1,5 @@
 #define SDL_MAIN_HANDLED
-#include "Game.h"
+#include "Core/Game.h"
 
 Game *game = nullptr;
 
@@ -12,7 +12,7 @@ int main(int argc, const char * argv[]) {
 
     game = new Game();
 
-    game->init("KoKo's Poker", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, false);
+    game->init("KoKo's Poker", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, false);
 
     while (game->running()) {
 

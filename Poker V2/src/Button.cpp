@@ -1,7 +1,7 @@
-#include "Button.h"
+#include "UI/Button.h"
 
 Button::Button(SDL_Renderer* renderer, int x, int y, int w, int h, const std::string& text, TTF_Font* font)
-    : text(text), font(font), textTexture(nullptr), color({200, 200, 200, 255}), textColor({0, 0, 0, 255}) {
+    :renderer(renderer), text(text), font(font), textTexture(nullptr), color({200, 200, 200, 255}), textColor({0, 0, 0, 255}) {
     rect = {x, y, w, h};
 
     // Create the text texture
@@ -20,7 +20,7 @@ Button::~Button() {
     }
 }
 
-void Button::render(SDL_Renderer* renderer) {
+void Button::render() {
     // Render the button rectangle
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &rect);

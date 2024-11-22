@@ -1,10 +1,10 @@
-#include "Game.h"
-#include "TextureManager.h"
-#include "Card.h"
+#include "Core/Game.h"
 
 Card* card;   
 Card* card2;   
-Button* basicButton;
+Player* player;
+InputBox* test;
+Basic* basic;
 
 Game::Game() : window(nullptr), renderer(nullptr), font(nullptr), isRunning(false), mode(MENU) {
     basicButton = nullptr;
@@ -54,42 +54,53 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-   card = new Card(renderer, 0, 0, DIAMONDS, TWO); //
-   card2 = new Card(renderer, 300, 300, CLUBS, ACE); //
-   basicButton = new Button(renderer, 200, 150, 200, 50, "Basic", font);
-
+    // card2 = new Card(renderer, 0, 0, DIAMONDS, TWO);
+    // card = new Card(renderer, 0, 0, DIAMONDS, THREE);
+    basicButton = new Button(renderer, width / 2 - 100, height / 2 - 25, 200, 50, "Basic", font);
+    // test = new InputBox(100, 100, 600, 50, font, renderer);
+    // player = new Player(renderer, "resrc\\avatar.png", 25, 25); // may change
+    // player->addCard(*card2);
+    // player->addCard(*card);
 
 }
 
 void Game::handleEvents() {
     SDL_PollEvent(&event);
+
+    if (mode == BASIC) {
+        basic->handleInput();  // Pass the event to Basic for processing
+    }
+
     switch (event.type) {
         case SDL_QUIT:
             isRunning = false;
             break;
-        case SDL_KEYDOWN:
+        case SDL_MOUSEBUTTONDOWN:
             if (mode == MENU) {
                 handleMenuInput(event);
             }
+            break;
         default:
             break;
     }
 }
 void Game::update() {
-    card->update();
-    card2->update();
-
+    if (mode == MENU) {
+        
+    } else if (mode == BASIC) {
+        basic->update();  // Update Basic
+    }
 }
+
 void Game::render() {
     SDL_RenderClear(renderer);
     //start rendering part
     if (mode == MENU) {
-        //render menu
-        basicButton->render(renderer);
+        renderMenu();
 
-    } else {
-        card->render();
-        card2->render();
+    } else if (mode == BASIC) {
+        //renderBasic();
+        basic->render();
     }
     //
     SDL_RenderPresent(renderer);
@@ -104,18 +115,23 @@ void Game::clean() {
     SDL_Quit();
 }
 
-void Game::renderMenu() { //Something wrong
+void Game::renderMenu() { 
+    basicButton->render();
 
 }
 
 void Game::handleMenuInput(SDL_Event& event) {
-    switch (event.key.keysym.sym) {
-        case SDLK_RETURN: // Start the game
-            mode = BASIC;
-            break;
-        case SDLK_ESCAPE: // Quit the game
+    switch (event.type) {
+        case SDL_QUIT: // Quit the game
             isRunning = false;
             break;
+
+        case SDL_MOUSEBUTTONDOWN: { // Handle mouse button clicks
+            if (basicButton->isClicked(event.button.x, event.button.y)) {
+                mode = BASIC;
+                basic = new Basic(renderer, font, event);
+            }
+        }
     }
 }
 

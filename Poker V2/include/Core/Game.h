@@ -4,7 +4,13 @@
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_ttf.h"
 
-#include "Button.h"
+#include "Core/Card.h"
+#include "Core/Player.h"
+#include "UI/Button.h"
+#include "UI/InputBox.h"
+#include "Core/TextureManager.h"
+
+#include "Core/Basic.h"
 
 #include <iostream>
 

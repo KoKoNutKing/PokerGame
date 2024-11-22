@@ -10,10 +10,11 @@ public:
     Button(SDL_Renderer* renderer, int x, int y, int w, int h, const std::string& text, TTF_Font* font);
     ~Button();
 
-    void render(SDL_Renderer* renderer);
+    void render();
     bool isClicked(int mouseX, int mouseY);
 
 private:
+    SDL_Renderer* renderer;
     SDL_Rect rect;               // Button rectangle
     SDL_Color color;             // Button color
     SDL_Color textColor;         // Text color
