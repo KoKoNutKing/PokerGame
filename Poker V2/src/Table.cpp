@@ -14,6 +14,7 @@ void Table::addPlayer(Player* player, int slotIndex) {
         std::cerr << "Invalid slot index: " << slotIndex << std::endl;
         return;
     }
+    player->setPosition(slots[slotIndex].x, slots[slotIndex].y); // Update player position
     slots[slotIndex].player = player;
 }
 
@@ -21,8 +22,8 @@ void Table::addPlayer(Player* player, int slotIndex) {
 void Table::render(SDL_Renderer* renderer) {
     for (const Slot& slot : slots) {
         if (slot.player) {
-            slot.player->setPosition(slot.x, slot.y); // Update player position
-            slot.player->render(renderer);           // Render the player
+            slot.player->render(renderer);    
+            slot.player->renderHand(renderer); // Render the player
         }
     }
 }

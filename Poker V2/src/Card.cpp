@@ -11,10 +11,6 @@ Card::Card(SDL_Renderer* ren, int x, int y, Suit cardSuit, Rank cardRank) {
     yPos = y;
 };
 
-Card::Card() : renderer(nullptr), cardTexture(nullptr), suit(CLUBS), rank(TWO), xPos(0), yPos(0), width(225), height(315) {
-    // Default constructor initializes with default values
-}
-
 Card::~Card() {
 
 }

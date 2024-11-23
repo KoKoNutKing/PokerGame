@@ -41,7 +41,7 @@ void InputBox::render() {
     }
 }
 
-void InputBox::handleEvents(SDL_Event& event, std::string & input) {
+void InputBox::handleEvents(SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONDOWN) {
         // Check if the click is inside the input box
         int mouseX = event.button.x;
@@ -62,7 +62,6 @@ void InputBox::handleEvents(SDL_Event& event, std::string & input) {
             // Submit the text when Enter is pressed
 
             //std::cout << "Entered Text: " << text << std::endl;
-            input = text;
             isActive = false;  // Optionally deactivate after pressing enter
 
         } else if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z) {
@@ -91,6 +90,6 @@ void InputBox::updateTextTexture() {
         textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
         SDL_FreeSurface(textSurface);  // Free the surface after creating the texture
     } else {
-        std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
+        //std::cerr << "Failed to create text surface: " << TTF_GetError() << std::endl;
     }
 }

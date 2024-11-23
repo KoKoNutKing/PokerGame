@@ -2,10 +2,7 @@
 
 #include "Core/Game.h"
 #include "Core/TextureManager.h"
-#include <string>
 
-const std::string SUITS[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
-const std::string RANKS[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
 // Enum for suit and rank types
 enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS };
@@ -15,7 +12,6 @@ enum Rank { TWO = 2, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACK, QUEE
 class Card {
 public:
     Card(SDL_Renderer* ren, int x, int y, Suit cardSuit, Rank cardRank);
-    Card();  
     ~Card();
     
     Rank rank;

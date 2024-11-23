@@ -25,6 +25,7 @@ public:
 
 
     void setName(const std::string& input);
+    std::string getName();
     // Getter and Setter for position
     void setPosition(int x, int y);
     SDL_Point getPosition() const;

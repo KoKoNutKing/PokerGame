@@ -54,13 +54,16 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    // card2 = new Card(renderer, 0, 0, DIAMONDS, TWO);
-    // card = new Card(renderer, 0, 0, DIAMONDS, THREE);
+    card2 = new Card(renderer, 0, 0, DIAMONDS, TWO);
+    card = new Card(renderer, 0, 0, HEARTS, THREE);
     basicButton = new Button(renderer, width / 2 - 100, height / 2 - 25, 200, 50, "Basic", font);
     // test = new InputBox(100, 100, 600, 50, font, renderer);
-    // player = new Player(renderer, "resrc\\avatar.png", 25, 25); // may change
-    // player->addCard(*card2);
-    // player->addCard(*card);
+    player = new Player(renderer, "resrc\\avatar.png", 100, 100); // may change
+    player->addCard(*card);
+    player->addCard(*card2);
+    player->setName("Hello");
+    player->setPosition(100,200);
+
 
 }
 
@@ -98,6 +101,7 @@ void Game::render() {
     if (mode == MENU) {
         renderMenu();
 
+
     } else if (mode == BASIC) {
         //renderBasic();
         basic->render();
@@ -116,6 +120,8 @@ void Game::clean() {
 }
 
 void Game::renderMenu() { 
+    player->render(renderer);
+    player->renderHand(renderer);
     basicButton->render();
 
 }
@@ -130,6 +136,7 @@ void Game::handleMenuInput(SDL_Event& event) {
             if (basicButton->isClicked(event.button.x, event.button.y)) {
                 mode = BASIC;
                 basic = new Basic(renderer, font, event);
+                basic->initBasic();
             }
         }
     }

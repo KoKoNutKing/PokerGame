@@ -15,7 +15,7 @@ public:
     void render();
 
     // Handles events (clicks and key presses)
-    void handleEvents(SDL_Event& event, std::string & input);
+    void handleEvents(SDL_Event& event);
 
     // Returns the current text in the input box
     std::string getText() const;

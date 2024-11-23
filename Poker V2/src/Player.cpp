@@ -9,6 +9,8 @@ bool isStraight(const std::vector<Card>& hand);
 Player::Player(SDL_Renderer* renderer, const std::string& texturePath, int x, int y)
     : renderer(renderer), playerTexture(nullptr) {
     
+    hand = {};
+
     // Initialize the player's position
     destRect = {x, y, 100, 100};
     srcRect = {0, 0, 1024, 1024};
@@ -34,6 +36,10 @@ void Player::setName(const std::string& input) {
     name = input;
 }
 
+std::string Player::getName() {
+    return name;
+}
+
 void Player::setPosition(int x, int y) {
     destRect.x = x;
     destRect.y = y;
@@ -51,7 +57,7 @@ void Player::sortHand() {
 void Player::renderHand(SDL_Renderer* renderer) {
     sortHand();
     for (int i = 0; i < hand.size(); ++i) {
-        hand[i].update(x + 125 + 125 * i, y); // may change
+        hand[i].update(destRect.x + 125 + 125 * i, destRect.y); // may change
         hand[i].render();
     }
 }
