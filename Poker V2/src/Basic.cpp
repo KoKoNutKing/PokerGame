@@ -17,28 +17,24 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
 }
 
 Basic::~Basic() {
-    // Clean up dynamically allocated UI elements
+    // Cleanup dynamically allocated memory
     delete playerNumberBox;
     for (auto& box : playerNameBoxes) {
         delete box;
     }
 
-    // Clean up player objects
     for (auto& player : players) {
         delete player;
     }
 
-    // Clean up other dynamically allocated objects
     delete deck;
-    delete table;
-    delete resultBox;
-
     delete addPlayerButton;
     delete subPlayerButton;
     delete getPlayerNumButton;
     delete getPlayerNameButton;
     delete startButton;
 }
+
 
 
 void Basic::initBasic() {

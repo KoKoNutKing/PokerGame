@@ -21,10 +21,8 @@ Player::Player(SDL_Renderer* renderer, const std::string& texturePath, int x, in
 
 Player::~Player() {
     if (playerTexture) {
-        SDL_DestroyTexture(playerTexture);
-        playerTexture = nullptr; // Nullify to avoid dangling pointers
+        SDL_DestroyTexture(playerTexture); // Destroy the texture when the player is destroyed
     }
-    hand.clear(); // Clear the hand to ensure no lingering objects
 }
 
 void Player::render(SDL_Renderer* renderer) {

@@ -12,10 +12,7 @@ Card::Card(SDL_Renderer* ren, int x, int y, Suit cardSuit, Rank cardRank) {
 };
 
 Card::~Card() {
-    if (cardTexture) {               // Check if the texture exists
-        SDL_DestroyTexture(cardTexture); // Free the texture
-        cardTexture = nullptr;       // Nullify the pointer for safety
-    }
+
 }
 
 
