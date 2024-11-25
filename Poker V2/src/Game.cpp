@@ -1,18 +1,19 @@
 #include "Core/Game.h"
 
-Card* card;   
-Card* card2;   
-Player* player;
-InputBox* test;
-Basic* basic;
+
 
 Game::Game() : window(nullptr), renderer(nullptr), font(nullptr), isRunning(false), mode(MENU) {
     basicButton = nullptr;
+    basic = nullptr;
 }
 
 Game::~Game() {
+    delete basicButton; // Clean up the button
+    delete basic;       // Clean up the Basic object
 
-}    
+    // Clean up SDL and TTF resources
+    clean();
+}   
     
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
     int flags = 0;
@@ -54,15 +55,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
 
-    card2 = new Card(renderer, 0, 0, DIAMONDS, TWO);
-    card = new Card(renderer, 0, 0, HEARTS, THREE);
+
     basicButton = new Button(renderer, width / 2 - 100, height / 2 - 25, 200, 50, "Basic", font);
     // test = new InputBox(100, 100, 600, 50, font, renderer);
-    player = new Player(renderer, "resrc\\avatar.png", 100, 100); // may change
-    player->addCard(*card);
-    player->addCard(*card2);
-    player->setName("Hello");
-    player->setPosition(100,200);
+
 
 
 }
@@ -119,9 +115,33 @@ void Game::clean() {
     SDL_Quit();
 }
 
+void Game::renderLoadingScreen(const std::string& message) {
+    // Clear the screen
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black background
+    SDL_RenderClear(renderer);
+
+    // Render the loading text
+    SDL_Color textColor = { 255, 255, 255, 255 }; // White color
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, message.c_str(), textColor);
+    if (textSurface) {
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+        SDL_FreeSurface(textSurface);
+
+        if (textTexture) {
+            int textWidth, textHeight;
+            SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);
+            SDL_Rect textRect = { 200, 200, textWidth, textHeight }; // Centered on screen
+            SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+            SDL_DestroyTexture(textTexture);
+        } else {
+            std::cerr << "Failed to create loading text texture: " << SDL_GetError() << std::endl;
+        }
+    } else {
+        std::cerr << "Failed to create loading text surface: " << TTF_GetError() << std::endl;
+    }
+}
+
 void Game::renderMenu() { 
-    player->render(renderer);
-    player->renderHand(renderer);
     basicButton->render();
 
 }
@@ -134,9 +154,12 @@ void Game::handleMenuInput(SDL_Event& event) {
 
         case SDL_MOUSEBUTTONDOWN: { // Handle mouse button clicks
             if (basicButton->isClicked(event.button.x, event.button.y)) {
-                mode = BASIC;
+                renderLoadingScreen("Initializing Basic Mode...");
+                SDL_RenderPresent(renderer);
                 basic = new Basic(renderer, font, event);
                 basic->initBasic();
+
+                mode = BASIC;
             }
         }
     }

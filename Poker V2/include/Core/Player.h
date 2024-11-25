@@ -31,6 +31,7 @@ public:
     SDL_Point getPosition() const;
 
     void addCard(const Card &card);
+    void resetHand();
     void sortHand();
     void renderHand(SDL_Renderer* renderer);
     std::pair<int, int> evaluateHand() const;

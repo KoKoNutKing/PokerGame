@@ -11,26 +11,35 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
     getPlayerNumButton = new Button(renderer, 200, 200, 100, 50, "Next", font); // Next button
     getPlayerNameButton = new Button(renderer, 200, 300, 100, 50, "Next", font); // Start button
     startButton = new Button(renderer, 200, 300, 100, 50, "Start", font); // Start button
+
+    resultBox = new TextBox(500, 500, 200, 50, font, renderer);  
+
 }
 
 Basic::~Basic() {
-    // Cleanup dynamically allocated memory
+    // Clean up dynamically allocated UI elements
     delete playerNumberBox;
     for (auto& box : playerNameBoxes) {
         delete box;
     }
 
+    // Clean up player objects
     for (auto& player : players) {
         delete player;
     }
 
+    // Clean up other dynamically allocated objects
     delete deck;
+    delete table;
+    delete resultBox;
+
     delete addPlayerButton;
     delete subPlayerButton;
     delete getPlayerNumButton;
     delete getPlayerNameButton;
     delete startButton;
 }
+
 
 void Basic::initBasic() {
     // Initialize slots and other components
@@ -72,6 +81,7 @@ void Basic::render() {
         // Handle start button click
         startButton->render();
         table->render(renderer);
+        resultBox->render();
         break;
     default:
         break;
@@ -142,10 +152,12 @@ void Basic::dealHand(Deck& deck, Player* player, int& deckIndex) {
             player->addCard(*card);
             deckIndex++;
         } else {
-            std::cerr << "Error: Card draw failed!" << std::endl;
+            std::cerr << "Error: Card draw failed!" << std::endl; //debug
         }
     }
 }
+
+
 int Basic::compareHands(const Player& p1, const Player& p2) {
     std::pair<int, int> hand1 = p1.evaluateHand();
     std::pair<int, int> hand2 = p2.evaluateHand();
@@ -183,32 +195,42 @@ void Basic::determineAndDisplayWinner() {
         }
     }
 
+    std::string resultMessage;
     if (tie) {
-        std::cout << "It's a tie!" << std::endl;
-
+        resultMessage = "It's a tie!";
     } else {
-        std::cout << winner->getName() << " wins!" << std::endl;
+        resultMessage = winner->getName() + " wins!";
     }
+
+    resultBox->setText(resultMessage);
 }
 
 void Basic::start() {
+    for (auto& player : players) {
+        if (player) {
+            player->resetHand();
+        } else {
+            std::cerr << "Player is null!" << std::endl; //debug
+        }
+    }
+
      if (!deck) {
-        std::cerr << "Deck is not initialized!" << std::endl;
+        std::cerr << "Deck is not initialized!" << std::endl; //debug
         return;
     }
 
     if (players.empty()) {
-        std::cerr << "No players have been created!" << std::endl;
+        std::cerr << "No players have been created!" << std::endl; //debug
         return;
     }
-    //deck->shuffleDeck();
+    deck->shuffleDeck();
     int deckIndex = 0;
     
     for (auto& player : players) {
         if (player) {
             dealHand(*deck, player, deckIndex);
         } else {
-            std::cerr << "Player is null!" << std::endl;
+            std::cerr << "Player is null!" << std::endl; //debug
         }
     }
 
@@ -232,6 +254,5 @@ void Basic::createTable() {
     for (int i = 0; i < numberOfPlayers; ++i) {
         getPlayer(playerNameBoxes[i]->getText());
         table->addPlayer(players[i], i); // Add each player to the table
-
     }
 }

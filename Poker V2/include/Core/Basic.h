@@ -55,6 +55,7 @@ private:
     Button* getPlayerNumButton; // Button for next phase
     Button* getPlayerNameButton; // Button to start the game
     Button* startButton; // Button to start the game
+    TextBox* resultBox;
 
     int numberOfPlayers;
     std::vector<Player*> players;

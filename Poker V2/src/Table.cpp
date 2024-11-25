@@ -6,7 +6,10 @@ Table::Table(std::vector<Slot> &gamemodeSlots) {
 }
 
 Table::~Table() {
-    // The table itself doesn't own players, so no need to delete them here
+    for (Slot& slot : slots) {
+        delete slot.player; // Free owned players
+        slot.player = nullptr;
+    }
 }
 
 void Table::addPlayer(Player* player, int slotIndex) {

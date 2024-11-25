@@ -16,6 +16,8 @@
 
 enum Mode {MENU, BASIC};
 
+class Basic;
+
 class Game {
 public:
     Game();
@@ -27,6 +29,7 @@ public:
     void update();
     void render();
     void clean();
+    void renderLoadingScreen(const std::string& message);
 
     bool running() {return isRunning;}
 
@@ -40,6 +43,8 @@ private:
 
     bool isRunning;
     Mode mode;
+    Basic* basic;
+
 
     Button* basicButton;
 

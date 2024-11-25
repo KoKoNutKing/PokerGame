@@ -13,10 +13,13 @@ Deck::Deck(SDL_Renderer* ren) : renderer(ren), currentIndex(0) {
 // Destructor
 Deck::~Deck() {
     for (int i = 0; i < 52; ++i) {
-        delete cards[i];  // Clean up dynamically allocated memory
-        cards[i] = nullptr;
+        if (cards[i]) {         // Safety check to avoid unnecessary delete
+            delete cards[i];    // Delete the dynamically allocated card
+            cards[i] = nullptr; // Nullify the pointer to prevent dangling references
+        }
     }
 }
+
 
 // Create the deck
 void Deck::createDeck() {

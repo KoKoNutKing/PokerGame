@@ -60,12 +60,9 @@ void InputBox::handleEvents(SDL_Event& event) {
             text.pop_back();
         } else if (event.key.keysym.sym == SDLK_RETURN) {
             // Submit the text when Enter is pressed
-
-            //std::cout << "Entered Text: " << text << std::endl;
             isActive = false;  // Optionally deactivate after pressing enter
 
         } else if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z) {
-            // Add a character to the text (from space to z for simplicity)
             text += static_cast<char>(event.key.keysym.sym);
         }
     }
@@ -75,7 +72,7 @@ void InputBox::handleEvents(SDL_Event& event) {
 }
 
 std::string InputBox::getText() const {
-    return text;  // Return the typed text
+    return text.empty() ? " " : text;  // Return a space if text is empty
 }
 
 void InputBox::updateTextTexture() {

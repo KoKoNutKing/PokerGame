@@ -21,8 +21,10 @@ Player::Player(SDL_Renderer* renderer, const std::string& texturePath, int x, in
 
 Player::~Player() {
     if (playerTexture) {
-        SDL_DestroyTexture(playerTexture); // Destroy the texture when the player is destroyed
+        SDL_DestroyTexture(playerTexture);
+        playerTexture = nullptr; // Nullify to avoid dangling pointers
     }
+    hand.clear(); // Clear the hand to ensure no lingering objects
 }
 
 void Player::render(SDL_Renderer* renderer) {
@@ -49,6 +51,11 @@ void Player::setPosition(int x, int y) {
 void Player::addCard(const Card &card) {
     hand.push_back(card);
 }
+
+void Player::resetHand() {
+    hand.clear();
+}
+
 
 void Player::sortHand() {
     std::sort(hand.begin(), hand.end(), compareCards);
@@ -103,32 +110,7 @@ std::pair<int, int> Player::evaluateHand() const {
 }
 
 
-//
-// void Player::updateWinrate() {
-//     int totalGames = wins + losses + draws;
-//     winrate = totalGames > 0 ? (static_cast<double>(wins) / totalGames * 100) : 0.0;
-// }
-// void Player::updateFavoriteHand() {
-//     std::string handStr;
-//     for (const auto& card : hand) {
-//         handStr += std::to_string(card.rank) + "_";
-//     }
-//     handHistory[handStr]++;
-// }
-
-// std::string Player::getFavoriteHand() const {
-//     std::string favoriteHand;
-//     int maxCount = 0;
-//     for (const auto& entry : handHistory) {
-//         if (entry.second > maxCount) {
-//             maxCount = entry.second;
-//             favoriteHand = entry.first;
-//         }
-//     }
-//     return favoriteHand;
-// }
-
-//Support func
+//Support func (Calcualting Function)
 bool compareCards(const Card &card1, const Card &card2) {
     // Compare by value first
     int value1 = card1.rank;
