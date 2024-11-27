@@ -3,6 +3,8 @@
 #include "Core/Game.h"
 #include "Core/TextureManager.h"
 
+#include "Core/Config.h"
+
 
 // Enum for suit and rank types
 enum Suit { HEARTS, SPADES, DIAMONDS, CLUBS };
@@ -20,10 +22,10 @@ public:
     void update(int x, int y);
     void render();
 private:
-    const char* textureSheet = "resrc\\CardsSprite.png";
+    const char* textureSheet = Config::FaceUpCard;
 
     int xPos, yPos;
-    int width = 225, height = 315;
+    int width = Config::CardWidth, height = Config::CardHeight;
     float scale;
 
     SDL_Texture* cardTexture;

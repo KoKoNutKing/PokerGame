@@ -6,13 +6,14 @@
 
 #include "Core/Card.h"
 #include "Core/Player.h"
-#include "UI/Button.h"
-#include "UI/InputBox.h"
 #include "Core/TextureManager.h"
-
 #include "Core/Basic.h"
 
-#include <iostream>
+#include "Core/Config.h"
+
+#include "UI/Button.h"
+#include "UI/InputBox.h"
+
 
 enum Mode {MENU, BASIC};
 
@@ -29,10 +30,11 @@ public:
     void update();
     void render();
     void clean();
-    void renderLoadingScreen(const std::string& message);
 
     bool running() {return isRunning;}
 
+    void renderLoadingScreen(const std::string& message);
+    void renderBackGround(const std::string& link);
     
 private:
     SDL_Window* window;
@@ -47,6 +49,7 @@ private:
 
 
     Button* basicButton;
+    Button* backButton;
 
     void renderMenu();
     void handleMenuInput(SDL_Event& event);

@@ -157,7 +157,6 @@ void Basic::dealHand(Deck& deck, Player* player, int& deckIndex) {
 int Basic::compareHands(const Player& p1, const Player& p2) {
     std::pair<int, int> hand1 = p1.evaluateHand();
     std::pair<int, int> hand2 = p2.evaluateHand();
-      // First compare the 'first' value (typically the main hand rank)
     if (hand1.first > hand2.first) {
         return 1;
     }
@@ -165,15 +164,12 @@ int Basic::compareHands(const Player& p1, const Player& p2) {
         return -1;
     }
 
-    // If 'first' values are the same, compare the 'second' value (e.g., tie-breaker)
     if (hand1.second > hand2.second) {
         return 1;
     }
     if (hand1.second < hand2.second) {
         return -1;
     }
-
-    // If both are equal, return 0 (tie)
     return 0;
 }
 

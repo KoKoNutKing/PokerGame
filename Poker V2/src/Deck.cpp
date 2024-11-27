@@ -12,7 +12,11 @@ Deck::Deck(SDL_Renderer* ren) : renderer(ren), currentIndex(0) {
 
 // Destructor
 Deck::~Deck() {
-
+    // Clean up the dynamically allocated cards
+    for (int i = 0; i < 52; ++i) {
+        delete cards[i];  // Delete each Card object in the array
+        cards[i] = nullptr;  // Set pointer to nullptr for safety
+    }
 }
 
 
@@ -35,9 +39,13 @@ void Deck::createDeck() {
 
 // Shuffle the deck
 void Deck::shuffleDeck() {
-    std::random_device rd;
-    std::mt19937 g(rd());
-    std::shuffle(cards, cards + 52, g);  // Shuffle the deck of 52 cards
+    unsigned int seed = static_cast<unsigned int>(time(0)); 
+    srand(seed); //goi seed
+
+    for (int i = 51; i > 0; --i) {
+        int j = rand() % (i + 1);  
+        std::swap(cards[i], cards[j]);  
+    }
 }
 
 // Draw a card from the deck

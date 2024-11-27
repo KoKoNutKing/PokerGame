@@ -1,10 +1,12 @@
 #define SDL_MAIN_HANDLED
+
 #include "Core/Game.h"
+#include "Core/Config.h"
 
 Game *game = nullptr;
 
 int main(int argc, const char * argv[]) {
-    const int FPS = 60;
+    const int FPS = Config::FPS;
     const int frameDelay = 1000 / FPS;
 
     Uint32 frameStart;
@@ -12,7 +14,7 @@ int main(int argc, const char * argv[]) {
 
     game = new Game();
 
-    game->init("KoKo's Poker", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, false);
+    game->init(Config::WindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Config::ScreenWidth, Config::ScreenHeight, false);
 
     while (game->running()) {
 
