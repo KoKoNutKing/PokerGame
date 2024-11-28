@@ -152,6 +152,25 @@ void print_player_statistics(const vector<player_t>& players) {
              << ", Win Rate = " << player.win_rate << "%\n";
     }
 }
+void print_leaderboard(vector<player_t> players) {
+    // Sắp xếp người chơi theo số lượng chiến thắng (giảm dần)
+    sort(players.begin(), players.end(), [](const player_t& a, const player_t& b) {
+        return a.wins > b.wins;
+    });
+
+    // Hiển thị bảng xếp hạng
+    cout << "\n===== Leaderboard =====\n";
+    cout << "Rank\tPlayer\t\tWins\tGames Played\tWin Rate\n";
+    cout << "--------------------------------------------------\n";
+    for (size_t i = 0; i < players.size(); ++i) {
+        int total_games = players[i].wins + players[i].draws + players[i].losses;
+        cout << i + 1 << "\t" << players[i].username
+             << "\t\t" << players[i].wins
+             << "\t" << total_games
+             << "\t\t" << players[i].win_rate << "%\n";
+    }
+    cout << "==================================================\n";
+}
 
 int main() {
     vector<player_t> players;
@@ -197,7 +216,7 @@ int main() {
             update_win_rate(player);
         }
         print_player_statistics(players);
-
+        print_leaderboard(players);
         cout << "Do you want to play again? (y/n): ";
         cin >> play_again;
 
