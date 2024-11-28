@@ -194,6 +194,7 @@ void Basic::determineAndDisplayWinner() {
             tie = true;
         }
     }
+    updateData(dataSaver, winner->getName());
 
     std::string resultMessage;
     if (tie) {
@@ -247,6 +248,7 @@ void Basic::addNameBox() {
 }
 
 void Basic::createTable() {
+    dataSaver.clear();
     if (table == nullptr) {
         table = new Table(basicSlots);
     }
@@ -254,5 +256,17 @@ void Basic::createTable() {
     for (int i = 0; i < numberOfPlayers; ++i) {
         getPlayer(playerNameBoxes[i]->getText());
         table->addPlayer(players[i], i); // Add each player to the table
+
+        dataSaver.push_back(PlayerData {playerNameBoxes[i]->getText(), 0, 0}); //
+        
+    }
+}
+
+void Basic::updateData(std::vector<PlayerData> &data, std::string winnerName) {
+    for (auto & player: data) {
+        if (player.name == winnerName) {
+            player.totalBasicWins += 1;
+            }
+        player.totalBasic += 1;
     }
 }

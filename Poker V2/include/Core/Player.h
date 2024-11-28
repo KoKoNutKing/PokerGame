@@ -45,7 +45,6 @@ private:
     std::vector<Card> hand;
     int x, y;              // Player position
 
-    // int score;             // Player score
     SDL_Renderer* renderer;
     SDL_Texture* playerTexture;  // Texture for rendering
     SDL_Rect srcRect;      // Source rectangle for sprite

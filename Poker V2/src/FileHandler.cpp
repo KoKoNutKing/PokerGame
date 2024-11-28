@@ -1,105 +1,76 @@
 #include "Core/FileHandler.h"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-// Constructor to initialize file path
-CSVHandler::CSVHandler(const std::string& filePath) : filePath(filePath) {}
+using namespace std;
 
-// Read all rows from the CSV
-std::vector<std::vector<std::string>> CSVHandler::readAll() {
-    std::vector<std::vector<std::string>> data;
-    std::ifstream inFile(filePath);
+// Read data from a CSV file
+vector<PlayerData> readFromCSV(const string& fileName) {
+    vector<PlayerData> players;
+    ifstream file(fileName);
 
-    if (!inFile.is_open()) {
-        std::cerr << "Error: Could not open file " << filePath << std::endl;
-        return data;
+    if (!file.is_open()) {
+        cerr << "Could not open the file: " << fileName << endl;
+        return players;
     }
 
-    std::string line;
-    while (std::getline(inFile, line)) {
-        data.push_back(splitLine(line, ','));
+    string line;
+    while (getline(file, line)) {
+        istringstream iss(line);
+        string name, matchesStr, winsStr;
+
+        if (getline(iss, name, ',') &&
+            getline(iss, matchesStr, ',') &&
+            getline(iss, winsStr)) {
+            PlayerData player;
+            player.name = name;
+            player.totalBasic = stoi(matchesStr);
+            player.totalBasicWins = stoi(winsStr);
+            players.push_back(player);
+        }
     }
 
-    inFile.close();
-    return data;
+    file.close();
+    return players;
 }
 
-// Write a row to the CSV (appends)
-void CSVHandler::writeRow(const std::vector<std::string>& row) {
-    std::ofstream outFile(filePath, std::ios::app);
-
-    if (!outFile.is_open()) {
-        std::cerr << "Error: Could not write to file " << filePath << std::endl;
+// Write data to a CSV file
+void writeToCSV(const string& fileName, const vector<PlayerData>& players) {
+    ofstream file(fileName, ios::trunc); // Overwrite the file
+    if (!file.is_open()) {
+        cerr << "Could not open the file: " << fileName << endl;
         return;
     }
 
-    for (size_t i = 0; i < row.size(); ++i) {
-        outFile << row[i];
-        if (i < row.size() - 1) {
-            outFile << ",";
-        }
+    for (const auto& player : players) {
+        file << player.name << "," << player.totalBasic << "," << player.totalBasicWins << "\n";
     }
-    outFile << "\n";
-    outFile.close();
+
+    file.close();
 }
 
-// Update a specific player's score or add new
-void CSVHandler::updateRow(const std::string& key, const std::string& newValue) {
-    std::ifstream inFile(filePath);
-    std::vector<std::vector<std::string>> data;
-    bool updated = false;
+// Update or add a new player in the CSV file
+void updatePlayerInCSV(const string& fileName, const string& playerName, int matches, int wins) {
+    vector<PlayerData> players = readFromCSV(fileName);
 
-    if (!inFile.is_open()) {
-        std::cerr << "Error: Could not open file " << filePath << std::endl;
-        return;
-    }
-
-    // Read and update
-    std::string line;
-    while (std::getline(inFile, line)) {
-        auto row = splitLine(line, ',');
-        if (!row.empty() && row[0] == key) {
-            row[1] = newValue;
-            updated = true;
+    // Check if the player already exists
+    bool found = false;
+    for (auto& player : players) {
+        if (player.name == playerName) {
+            player.totalBasic += matches;
+            player.totalBasicWins += wins;
+            found = true;
+            break;
         }
-        data.push_back(row);
-    }
-    inFile.close();
-
-    // Append new if not updated
-    if (!updated) {
-        data.push_back({key, newValue});
     }
 
-    // Rewrite the file
-    std::ofstream outFile(filePath, std::ios::trunc);
-    if (!outFile.is_open()) {
-        std::cerr << "Error: Could not write to file " << filePath << std::endl;
-        return;
+    // If not found, add a new player
+    if (!found) {
+        players.push_back({playerName, matches, wins});
     }
 
-    for (const auto& row : data) {
-        for (size_t i = 0; i < row.size(); ++i) {
-            outFile << row[i];
-            if (i < row.size() - 1) {
-                outFile << ",";
-            }
-        }
-        outFile << "\n";
-    }
-    outFile.close();
-}
-
-// Helper: Split a line into tokens
-std::vector<std::string> CSVHandler::splitLine(const std::string& line, char delimiter) {
-    std::vector<std::string> tokens;
-    std::stringstream stream(line);
-    std::string token;
-
-    while (std::getline(stream, token, delimiter)) {
-        tokens.push_back(token);
-    }
-
-    return tokens;
+    // Write updated data back to the file
+    writeToCSV(fileName, players);
 }

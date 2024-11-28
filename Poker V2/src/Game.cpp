@@ -6,12 +6,14 @@ Game::Game() : window(nullptr), renderer(nullptr), font(nullptr), isRunning(fals
     basicButton = nullptr;
     backButton = nullptr;
     basic = nullptr;
+    leaderBoard = nullptr;
 }
 
 Game::~Game() {
     delete basicButton; // Clean up the button
     delete backButton;       // Clean up the Basic object
     delete basic;
+    delete leaderBoard;
 
     // Clean up SDL and TTF resources
     clean();
@@ -67,6 +69,13 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
                             Config::basicButtonHeight, 
                             "Basic", 
                             font);
+    LeaderBoardButton = new Button(renderer, 
+                            Config::basicButtonX + 100, 
+                            Config::basicButtonY, 
+                            Config::basicButtonWidth, 
+                            Config::basicButtonHeight, 
+                            "Leader Board", 
+                            font);
     backButton = new Button(renderer,
                              Config::backButtonX, 
                              Config::backButtonY, 
@@ -87,6 +96,7 @@ void Game::handleEvents() {
         basic->handleInput();  // Pass the event to Basic for processing
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (backButton->isClicked(event.button.x, event.button.y)) {
+                WriteData(basic->dataSaver); // Save data before switching
                 mode = MENU;
             }
         }
@@ -131,6 +141,13 @@ void Game::render() {
     //
     SDL_RenderPresent(renderer);
 }
+
+void Game::WriteData(std::vector<PlayerData> playerData) {
+    for (auto & player: playerData) {
+        updatePlayerInCSV(Config::DataPath, player.name, player.totalBasic, player.totalBasicWins);
+    }
+}
+
 void Game::clean() {
     if (font) {
         TTF_CloseFont(font);
@@ -144,6 +161,7 @@ void Game::clean() {
 
 void Game::renderMenu() { 
     basicButton->render();
+    LeaderBoardButton->render();
 
 }
 
@@ -165,6 +183,10 @@ void Game::handleMenuInput(SDL_Event& event) {
                 basic->initBasic();
 
                 mode = BASIC;
+            } else if (LeaderBoardButton->isClicked(event.button.x, event.button.y)) {
+                leaderBoard = new LeaderBoard;
+                leaderBoard->getData(Config::DataPath);
+                leaderBoard->display(5);
             }
         }
     }
@@ -195,3 +217,5 @@ void Game::renderLoadingScreen(const std::string& message) {
         std::cerr << "Failed to create loading text surface: " << TTF_GetError() << std::endl;
     }
 }
+
+

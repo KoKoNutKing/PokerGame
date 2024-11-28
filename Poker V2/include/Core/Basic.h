@@ -19,8 +19,10 @@
 
 enum Phrase {NUMBER, PLAYER, START};
 
+
 class Table;
 class Player;
+struct PlayerData;
 struct Slot;
 class Deck;
 
@@ -48,6 +50,11 @@ public:
     void addNameBox();
     void createTable();
 
+    void updateData(std::vector<PlayerData> &data, std::string winnerName);
+
+    std::vector<PlayerData> dataSaver;
+
+
 private:
     SDL_Renderer* renderer;
     TTF_Font* font;
@@ -64,6 +71,7 @@ private:
     Button* getPlayerNameButton; // Button to start the game
     Button* startButton; // Button to start the game
     TextBox* resultBox;
+
 
     int numberOfPlayers;
     std::vector<Player*> players;

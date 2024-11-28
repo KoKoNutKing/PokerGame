@@ -2,11 +2,16 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <string>
+
 #include "SDL2/SDL.h"
-#include "Core/TextureManager.h"
 
 // Simple structure to hold configuration values
+    // Struct for Player
+
+
 struct Config {
+
     // Screen configuration
     static inline int ScreenWidth = 1280;   // Default width
     static inline int ScreenHeight = 720; // Default height
@@ -18,6 +23,9 @@ struct Config {
 
     static inline const char* FaceUpCard = "resrc\\CardsSprite.png";
     static inline const char* FaceDownCard = "resrc\\CardsSprite.png";
+    
+    //Data File
+    static inline const char* DataPath = "resrc\\PlayerData.csv";
 
     // BackGround 
     static inline SDL_Rect BgSrcRect = { 0, 0, ScreenWidth, ScreenHeight };
@@ -78,6 +86,13 @@ struct Config {
 
     // Other configurations
     static inline const char* WindowTitle = "KoKoNut's Poker";
+};
+struct PlayerData {
+    std::string name;
+    int totalBasic;
+    int totalBasicWins;
+
+    
 };
 
 #endif // CONFIG_H

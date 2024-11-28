@@ -8,6 +8,8 @@
 #include "Core/Player.h"
 #include "Core/TextureManager.h"
 #include "Core/Basic.h"
+#include "Core/FileHandler.h"
+#include "Core/LeaderBoard.h"
 
 #include "Core/Config.h"
 
@@ -18,6 +20,8 @@
 enum Mode {MENU, BASIC};
 
 class Basic;
+struct PlayerData;
+
 
 class Game {
 public:
@@ -30,6 +34,7 @@ public:
     void update();
     void render();
     void clean();
+    void WriteData(std::vector<PlayerData>);
 
     bool running() {return isRunning;}
 
@@ -49,9 +54,11 @@ private:
     bool isRunning;
     Mode mode;
     Basic* basic;
+    LeaderBoard* leaderBoard;
 
 
     Button* basicButton;
+    Button* LeaderBoardButton;
     Button* backButton;
 
     void renderMenu();
