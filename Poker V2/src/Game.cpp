@@ -56,7 +56,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     } else {
         isRunning = false;
     }
-
+    //Backgorund
+    MenuBg = TextureManager::LoadTexture(Config::MenuPath, renderer);
+    InitingBg = TextureManager::LoadTexture(Config::InitingPath, renderer);
 
     basicButton = new Button(renderer, 
                             Config::basicButtonX, 
@@ -104,7 +106,7 @@ void Game::handleEvents() {
             break;
     }
 }
-void Game::update() {
+void Game::update() { 
     if (mode == MENU) {
         
     } else if (mode == BASIC) {
@@ -117,7 +119,7 @@ void Game::render() {
     SDL_RenderClear(renderer);
     //start rendering part
     if (mode == MENU) {
-        renderBackGround("resrc\\menu.png");
+        TextureManager::DrawTexture(MenuBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         renderMenu();
 
 
@@ -153,7 +155,7 @@ void Game::handleMenuInput(SDL_Event& event) {
 
         case SDL_MOUSEBUTTONDOWN: { // Handle mouse button clicks
             if (basicButton->isClicked(event.button.x, event.button.y)) {
-                renderLoadingScreen("Initializing Basic Mode...");
+                TextureManager::DrawTexture(InitingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
                 SDL_RenderPresent(renderer);
                 if (basic) {
                     delete basic;
@@ -192,34 +194,4 @@ void Game::renderLoadingScreen(const std::string& message) {
     } else {
         std::cerr << "Failed to create loading text surface: " << TTF_GetError() << std::endl;
     }
-}
-
-void Game::renderBackGround(const std::string& link) {
-    // Load the image from the specified file
-    SDL_Surface* surface = IMG_Load(link.c_str());
-    if (!surface) {
-        std::cerr << "Failed to load background image: " << IMG_GetError() << std::endl;
-        return;
-    }
-
-    // Create a texture from the surface
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);  // Free the surface after creating the texture
-    if (!texture) {
-        std::cerr << "Failed to create texture: " << SDL_GetError() << std::endl;
-        return;
-    }
-
-    // Get the screen dimensions
-    int screenWidth, screenHeight;
-    SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-
-    // Define the destination rectangle for the texture
-    SDL_Rect destRect = {0, 0, screenWidth, screenHeight};
-
-    // Render the texture to cover the entire screen
-    SDL_RenderCopy(renderer, texture, nullptr, &destRect);
-
-    // Cleanup the texture after rendering
-    SDL_DestroyTexture(texture);
 }

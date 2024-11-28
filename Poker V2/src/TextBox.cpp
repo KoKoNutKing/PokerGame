@@ -4,7 +4,7 @@
 // Constructor to initialize the TextBox
 TextBox::TextBox(int x, int y, int w, int h, TTF_Font* font, SDL_Renderer* renderer)
     : x(x), y(y), w(w), h(h), font(font), renderer(renderer), text("") {
-    textColor = { 255, 0, 0, 255 };  // White color for text
+    textColor = { 255, 255, 255, 255 };  // White color for text
     textTexture = nullptr;
     textRect = { x, y, w, h };
 }
@@ -20,8 +20,8 @@ TextBox::~TextBox() {
 // Render the TextBox (draw the box and the text inside)
 void TextBox::render() {
     // Render the background (you can customize it)
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background for the text box
-    SDL_RenderFillRect(renderer, &textRect);
+    //SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);  // Black background for the text box
+    //SDL_RenderFillRect(renderer, &textRect);
 
     // Render the text inside the TextBox
     if (!text.empty()) {

@@ -4,9 +4,15 @@
 #include <vector>
 #include <string>
 
+#include "SDL2/SDL.h"
+
 #include "Core/Player.h"
 #include "Core/Table.h"
 #include "Core/Deck.h"
+#include "Core/TextureManager.h"
+
+#include "Core/Config.h"
+
 #include "UI/InputBox.h"
 #include "UI/Button.h"
 #include "UI/TextBox.h"
@@ -47,6 +53,8 @@ private:
     TTF_Font* font;
     SDL_Event& event;
 
+    SDL_Texture* BasicGetPlBg;
+    SDL_Texture* BasicPlayingBg;
 
     TextBox* playerNumberBox; // Box for number of players
     std::vector<InputBox*> playerNameBoxes; // Boxes for player names

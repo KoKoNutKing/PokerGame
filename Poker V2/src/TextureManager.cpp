@@ -7,3 +7,11 @@ SDL_Texture* TextureManager::LoadTexture(const char* filename, SDL_Renderer* ren
 
     return texture;
 }
+
+void TextureManager::DrawTexture(SDL_Texture* texture, SDL_Renderer* renderer, SDL_Rect srcRect, SDL_Rect destRect) {
+    if (!texture) {
+        std::cerr << "Cannot draw texture: texture is null!" << std::endl;
+        return;
+    }
+    SDL_RenderCopy(renderer, texture, &srcRect, &destRect);
+}

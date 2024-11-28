@@ -7,7 +7,7 @@ InputBox::InputBox(int x, int y, int width, int height, TTF_Font* font, SDL_Rend
     boxRect = { x, y, width, height };
 
     // Set the text color (black)
-    textColor = { 255, 0, 0, 255 };
+    textColor = { 255, 255, 255, 255 };
 
     // Initialize textTexture to null
     textTexture = nullptr;

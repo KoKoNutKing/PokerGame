@@ -41,6 +41,9 @@ private:
     SDL_Renderer* renderer;
     TTF_Font* font;
 
+    SDL_Texture* MenuBg;
+    SDL_Texture* InitingBg;
+
     SDL_Event event;
 
     bool isRunning;

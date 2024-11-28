@@ -5,12 +5,12 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
 
 
     // Initialize input boxes and buttons
-    playerNumberBox = new TextBox(100, 100, 200, 50, font, renderer);  // Box for number of players
-    addPlayerButton = new Button(renderer, 350, 100, 50, 50, "+", font); // Increase button
-    subPlayerButton = new Button(renderer, 50, 100, 50, 50, "-", font); // Decrease button
-    getPlayerNumButton = new Button(renderer, 200, 200, 100, 50, "Next", font); // Next button
+    playerNumberBox = new TextBox(Config::getPlayerNumButtonX, Config::getPlayerNumButtonY, Config::getPlayerNumButtonWidth, Config::getPlayerNumButtonHeight, font, renderer);  // Box for number of players
+    addPlayerButton = new Button(renderer, Config::addPlayerButtonX, Config::addPlayerButtonY, Config::addPlayerButtonWidth, Config::addPlayerButtonHeight, "+", font); // Increase button
+    subPlayerButton = new Button(renderer, Config::subPlayerButtonX, Config::subPlayerButtonY, Config::subPlayerButtonWidth, Config::subPlayerButtonHeight, "-", font); // Decrease button
+    getPlayerNumButton = new Button(renderer, Config::getPlayerNumButtonX, Config::getPlayerNumButtonY + 100, Config::getPlayerNumButtonWidth, Config::getPlayerNumButtonHeight, "Next", font); // Next button
     getPlayerNameButton = new Button(renderer, 200, 300, 100, 50, "Next", font); // Start button
-    startButton = new Button(renderer, 200, 300, 100, 50, "Start", font); // Start button
+    startButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Start", font); // Start button
 
     resultBox = new TextBox(500, 500, 200, 50, font, renderer);  
 
@@ -42,6 +42,10 @@ void Basic::initBasic() {
     basicSlots = {
         {100, 100, nullptr}, {100, 200, nullptr}, {100, 300, nullptr}, {100, 400, nullptr}, {100, 500, nullptr}
     };
+    //background
+    BasicGetPlBg = TextureManager::LoadTexture(Config::BasicGetPlPath, renderer);
+    BasicPlayingBg = TextureManager::LoadTexture(Config::BasicPlayingPath, renderer);
+
     if (table) {
         delete table; // Clean up any existing table
     }
@@ -62,12 +66,14 @@ void Basic::render() {
     switch (phrase)
     {
     case NUMBER:
+        TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         playerNumberBox->render();   
         addPlayerButton->render();   
         subPlayerButton->render();   
         getPlayerNumButton->render();
         break;
     case PLAYER:
+        TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         for (auto& box : playerNameBoxes) {
             box->render();
         }
@@ -75,6 +81,8 @@ void Basic::render() {
         break;
     case START:
         // Handle start button click
+        TextureManager::DrawTexture(BasicPlayingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+
         startButton->render();
         table->render(renderer);
         resultBox->render();

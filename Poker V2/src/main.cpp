@@ -17,7 +17,6 @@ int main(int argc, const char * argv[]) {
     game->init(Config::WindowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Config::ScreenWidth, Config::ScreenHeight, false);
 
     while (game->running()) {
-
         frameStart = SDL_GetTicks();
         //menu;
         game->handleEvents();

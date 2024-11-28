@@ -2,6 +2,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "SDL2/SDL.h"
+#include "Core/TextureManager.h"
+
 // Simple structure to hold configuration values
 struct Config {
     // Screen configuration
@@ -15,6 +18,16 @@ struct Config {
 
     static inline const char* FaceUpCard = "resrc\\CardsSprite.png";
     static inline const char* FaceDownCard = "resrc\\CardsSprite.png";
+
+    // BackGround 
+    static inline SDL_Rect BgSrcRect = { 0, 0, ScreenWidth, ScreenHeight };
+    static inline SDL_Rect BgDestRect = { 0, 0, ScreenWidth, ScreenHeight };
+
+    static inline const char* MenuPath = "resrc\\menu.png";
+    static inline const char* InitingPath = "resrc\\BasicInitingBg.png";
+    static inline const char* BasicGetPlPath = "resrc\\menu.png";
+    static inline const char* BasicPlayingPath = "resrc\\menu.png";
+
 
     // TextBox settings
     static inline int playerNumberBoxWidth = 200;
@@ -35,30 +48,30 @@ struct Config {
 
 
     // Button settings
-    static inline int addPlayerButtonX = 350;
-    static inline int addPlayerButtonY = 100;
-    static inline int addPlayerButtonWidth = 50;
-    static inline int addPlayerButtonHeight = 50;
-
-    static inline int subPlayerButtonX = 50;
-    static inline int subPlayerButtonY = 100;
-    static inline int subPlayerButtonWidth = 50;
-    static inline int subPlayerButtonHeight = 50;
-
-    static inline int getPlayerNumButtonX = 200;
-    static inline int getPlayerNumButtonY = 200;
     static inline int getPlayerNumButtonWidth = 100;
     static inline int getPlayerNumButtonHeight = 50;
+    static inline int getPlayerNumButtonX = ScreenWidth / 2 - getPlayerNumButtonWidth;
+    static inline int getPlayerNumButtonY = ScreenHeight / 2 - getPlayerNumButtonHeight;
 
-    static inline int getPlayerNameButtonX = 200;
-    static inline int getPlayerNameButtonY = 300;
+    static inline int addPlayerButtonWidth = 50;
+    static inline int addPlayerButtonHeight = 50;
+    static inline int addPlayerButtonX = getPlayerNumButtonX + 150;
+    static inline int addPlayerButtonY = getPlayerNumButtonY;
+
+    static inline int subPlayerButtonWidth = 50;
+    static inline int subPlayerButtonHeight = 50;
+    static inline int subPlayerButtonX = getPlayerNumButtonX - 100;
+    static inline int subPlayerButtonY = getPlayerNumButtonY;
+
     static inline int getPlayerNameButtonWidth = 100;
     static inline int getPlayerNameButtonHeight = 50;
+    static inline int getPlayerNameButtonX = 200;
+    static inline int getPlayerNameButtonY = 300;
 
-    static inline int startButtonX = 200;
-    static inline int startButtonY = 300;
     static inline int startButtonWidth = 100;
     static inline int startButtonHeight = 50;
+    static inline int startButtonX = ScreenWidth / 2 - startButtonWidth;
+    static inline int startButtonY = ScreenHeight / 2 - startButtonHeight;
 
 
 
