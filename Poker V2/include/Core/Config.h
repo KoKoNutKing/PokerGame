@@ -1,5 +1,4 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
 #include <string>
 
@@ -33,8 +32,9 @@ struct Config {
 
     static inline const char* MenuPath = "resrc\\menu.png";
     static inline const char* InitingPath = "resrc\\BasicInitingBg.png";
-    static inline const char* BasicGetPlPath = "resrc\\menu.png";
-    static inline const char* BasicPlayingPath = "resrc\\menu.png";
+    static inline const char* BasicGetNumPath = "resrc\\BasicGetNumPath.png";
+    static inline const char* BasicGetPlPath = "resrc\\BasicGetPlPath.png";
+    static inline const char* BasicPlayingPath = "resrc\\BasicPlaying.png";
 
 
     // TextBox settings
@@ -76,10 +76,10 @@ struct Config {
     static inline int getPlayerNameButtonX = 200;
     static inline int getPlayerNameButtonY = 300;
 
-    static inline int startButtonWidth = 100;
-    static inline int startButtonHeight = 50;
-    static inline int startButtonX = ScreenWidth / 2 - startButtonWidth;
-    static inline int startButtonY = ScreenHeight / 2 - startButtonHeight;
+    static inline int startButtonWidth = 200;
+    static inline int startButtonHeight = 75;
+    static inline int startButtonX = ScreenWidth * 0.9 - startButtonWidth / 2;
+    static inline int startButtonY = ScreenHeight * 0.8 - startButtonHeight / 2;
 
 
 
@@ -94,5 +94,3 @@ struct PlayerData {
 
     
 };
-
-#endif // CONFIG_H

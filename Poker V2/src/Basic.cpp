@@ -9,10 +9,10 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
     addPlayerButton = new Button(renderer, Config::addPlayerButtonX, Config::addPlayerButtonY, Config::addPlayerButtonWidth, Config::addPlayerButtonHeight, "+", font); // Increase button
     subPlayerButton = new Button(renderer, Config::subPlayerButtonX, Config::subPlayerButtonY, Config::subPlayerButtonWidth, Config::subPlayerButtonHeight, "-", font); // Decrease button
     getPlayerNumButton = new Button(renderer, Config::getPlayerNumButtonX, Config::getPlayerNumButtonY + 100, Config::getPlayerNumButtonWidth, Config::getPlayerNumButtonHeight, "Next", font); // Next button
-    getPlayerNameButton = new Button(renderer, 200, 300, 100, 50, "Next", font); // Start button
+    getPlayerNameButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Next", font); // Start button
     startButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Start", font); // Start button
 
-    resultBox = new TextBox(500, 500, 200, 50, font, renderer);  
+    resultBox = new TextBox(Config::startButtonHeight, Config::startButtonWidth, 200, 50, font, renderer);
 
 }
 
@@ -40,11 +40,12 @@ Basic::~Basic() {
 void Basic::initBasic() {
     // Initialize slots and other components
     basicSlots = {
-        {50, 50, nullptr}, {50, 250, nullptr}, {50, 450, nullptr}, {50, 650, nullptr}, {50, 850, nullptr}
+        {50, 50, nullptr}, {50, 175, nullptr}, {50, 300, nullptr}, {50, 425, nullptr}, {50, 550, nullptr}
     };
     
     //background
     BasicGetPlBg = TextureManager::LoadTexture(Config::BasicGetPlPath, renderer);
+    BasicGetNumBg = TextureManager::LoadTexture(Config::BasicGetNumPath, renderer);
     BasicPlayingBg = TextureManager::LoadTexture(Config::BasicPlayingPath, renderer);
 
     if (table) {
@@ -67,7 +68,7 @@ void Basic::render() {
     switch (phrase)
     {
     case NUMBER:
-        TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+        TextureManager::DrawTexture(BasicGetNumBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         playerNumberBox->render();   
         addPlayerButton->render();   
         subPlayerButton->render();   
@@ -75,8 +76,8 @@ void Basic::render() {
         break;
     case PLAYER:
         TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
-        for (auto& player : playerNameBoxes) {
-            player->render();
+        for (auto& playerBox : playerNameBoxes) {
+            playerBox->render();
         }
         getPlayerNameButton->render();
         break;
@@ -245,8 +246,8 @@ void Basic::start() {
 void Basic::addNameBox() {
     playerNameBoxes.clear();
     for (int i = 0; i < numberOfPlayers; ++i) {
-        playerNameBoxes.push_back(new InputBox(100, 200 + (i * 60), 200, 50, font, renderer));
-        playerNameDrawer.push_back(new TextBox(50, basicSlots[i].y + 150, 200, 50, font, renderer));
+        playerNameBoxes.push_back(new InputBox(Config::ScreenWidth / 2 - 100, 200 + (i * 60), 200, 50, font, renderer));
+        playerNameDrawer.push_back(new TextBox(50, basicSlots[i].y + 100, 200, 50, font, renderer));
 
     }
     phrase = PLAYER;

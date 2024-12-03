@@ -60,6 +60,7 @@ private:
     TTF_Font* font;
     SDL_Event& event;
 
+    SDL_Texture* BasicGetNumBg;
     SDL_Texture* BasicGetPlBg;
     SDL_Texture* BasicPlayingBg;
 

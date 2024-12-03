@@ -62,7 +62,7 @@ void Player::sortHand() {
 void Player::renderHand(SDL_Renderer* renderer) {
     sortHand();
     for (int i = 0; i < hand.size(); ++i) {
-        hand[i].update(destRect.x + 125 + 125 * i, destRect.y); // may change
+        hand[i].update(destRect.x + 150 + 150 * i, destRect.y - 25); // may change
         hand[i].render();
     }
 }
@@ -110,13 +110,11 @@ std::pair<int, int> Player::evaluateHand() const {
 
 //Support func (Calcualting Function)
 bool compareCards(const Card &card1, const Card &card2) {
-    // Compare by value first
     int value1 = card1.rank;
     int value2 = card2.rank;
     if (value1 != value2) {
         return value1 < value2;
     }
-    // If values are the same, compare by suit
     return card1.suit < card2.suit;
 }
 
