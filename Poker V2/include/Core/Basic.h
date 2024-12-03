@@ -65,6 +65,7 @@ private:
 
     TextBox* playerNumberBox; // Box for number of players
     std::vector<InputBox*> playerNameBoxes; // Boxes for player names
+    std::vector<TextBox*> playerNameDrawer; // Boxes for player names
     Button* addPlayerButton;
     Button* subPlayerButton;
     Button* getPlayerNumButton; // Button for next phase

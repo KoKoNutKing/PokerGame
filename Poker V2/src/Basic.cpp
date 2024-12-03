@@ -40,8 +40,9 @@ Basic::~Basic() {
 void Basic::initBasic() {
     // Initialize slots and other components
     basicSlots = {
-        {100, 100, nullptr}, {100, 200, nullptr}, {100, 300, nullptr}, {100, 400, nullptr}, {100, 500, nullptr}
+        {50, 50, nullptr}, {50, 250, nullptr}, {50, 450, nullptr}, {50, 650, nullptr}, {50, 850, nullptr}
     };
+    
     //background
     BasicGetPlBg = TextureManager::LoadTexture(Config::BasicGetPlPath, renderer);
     BasicPlayingBg = TextureManager::LoadTexture(Config::BasicPlayingPath, renderer);
@@ -74,8 +75,8 @@ void Basic::render() {
         break;
     case PLAYER:
         TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
-        for (auto& box : playerNameBoxes) {
-            box->render();
+        for (auto& player : playerNameBoxes) {
+            player->render();
         }
         getPlayerNameButton->render();
         break;
@@ -85,6 +86,9 @@ void Basic::render() {
 
         startButton->render();
         table->render(renderer);
+        for (auto & box : playerNameDrawer) {
+            box->render();
+        }
         resultBox->render();
         break;
     default:
@@ -94,7 +98,7 @@ void Basic::render() {
 
 void Basic::getPlayer(const std::string& name) {
     if (!name.empty()) {
-        Player* newPlayer = new Player(renderer, "resrc\\avatar.png", 25, 25);
+        Player* newPlayer = new Player(renderer, Config::DefaultAva, 25, 25);
         newPlayer->setName(name);
         players.push_back(newPlayer);
     }
@@ -242,6 +246,8 @@ void Basic::addNameBox() {
     playerNameBoxes.clear();
     for (int i = 0; i < numberOfPlayers; ++i) {
         playerNameBoxes.push_back(new InputBox(100, 200 + (i * 60), 200, 50, font, renderer));
+        playerNameDrawer.push_back(new TextBox(50, basicSlots[i].y + 150, 200, 50, font, renderer));
+
     }
     phrase = PLAYER;
     
@@ -255,6 +261,7 @@ void Basic::createTable() {
 
     for (int i = 0; i < numberOfPlayers; ++i) {
         getPlayer(playerNameBoxes[i]->getText());
+        playerNameDrawer[i]->setText(playerNameBoxes[i]->getText());
         table->addPlayer(players[i], i); // Add each player to the table
 
         dataSaver.push_back(PlayerData {playerNameBoxes[i]->getText(), 0, 0}); //

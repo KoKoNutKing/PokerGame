@@ -17,6 +17,10 @@ struct Config {
     static inline int ScreenHeight = 720; // Default height
     static inline int FPS = 60; 
 
+    //
+
+    static inline const char* DefaultAva = "resrc\\avatar.png";
+
     // Size configuration
     static inline int CardWidth = 225;  // Default card width
     static inline int CardHeight = 315; // Default card height

@@ -70,7 +70,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
                             "Basic", 
                             font);
     LeaderBoardButton = new Button(renderer, 
-                            Config::basicButtonX + 100, 
+                            Config::basicButtonX + 300, 
                             Config::basicButtonY, 
                             Config::basicButtonWidth, 
                             Config::basicButtonHeight, 
