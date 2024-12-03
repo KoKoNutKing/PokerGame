@@ -69,13 +69,13 @@ void Player::renderHand(SDL_Renderer* renderer) {
 
 std::pair<int, int> Player::evaluateHand() const {
     if (isFlush(hand) && isStraight(hand)) {
-        return {9, hand[-1].rank}; // Straight Flush
+        return {9, hand.back().rank}; // Straight Flush
     }
     if (isStraight(hand)) {
-        return {5, hand[-1].rank}; // Straight
+        return {5, hand.back().rank}; // Straight
     }
     if (isFlush(hand)) {
-        return {6, hand[-1].rank}; // Flush
+        return {6, hand.back().rank}; // Flush
     }
     std::map<int, int> rankCounts;
     for (const Card &card : hand) {

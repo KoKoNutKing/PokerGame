@@ -1,4 +1,3 @@
-// Config.h
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -6,28 +5,25 @@
 
 #include "SDL2/SDL.h"
 
-// Simple structure to hold configuration values
-    // Struct for Player
 
 
 struct Config {
 
     // Screen configuration
-    static inline int ScreenWidth = 1280;   // Default width
-    static inline int ScreenHeight = 720; // Default height
+    static inline int ScreenWidth = 1280;
+    static inline int ScreenHeight = 720;
     static inline int FPS = 60; 
 
-    //
 
-    static inline const char* DefaultAva = "resrc\\avatar.png";
-
-    // Size configuration
-    static inline int CardWidth = 225;  // Default card width
-    static inline int CardHeight = 315; // Default card height
+    // Card configuration
+    static inline int CardWidth = 225;  
+    static inline int CardHeight = 315; 
 
     static inline const char* FaceUpCard = "resrc\\CardsSprite.png";
-    static inline const char* FaceDownCard = "resrc\\CardsSprite.png";
+    static inline const char* FaceDownCard = "resrc\\CardsSprite.png"; // not in use
     
+    //Player
+    static inline const char* DefaultAva = "resrc\\avatar.png";
     //Data File
     static inline const char* DataPath = "resrc\\PlayerData.csv";
 
