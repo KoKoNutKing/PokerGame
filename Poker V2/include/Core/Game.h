@@ -33,7 +33,6 @@ public:
     void handleEvents();
     void update();
     void render();
-    void clean();
     void WriteData(std::vector<PlayerData>);
 
     bool running() {return isRunning;}
@@ -61,8 +60,8 @@ private:
     Button* LeaderBoardButton;
     Button* backButton;
 
-    void renderMenu();
     void handleMenuInput(SDL_Event& event);
+    void renderMenu();
 
 
 };

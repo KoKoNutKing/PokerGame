@@ -10,13 +10,19 @@ Game::Game() : window(nullptr), renderer(nullptr), font(nullptr), isRunning(fals
 }
 
 Game::~Game() {
-    delete basicButton; // Clean up the button
-    delete backButton;       // Clean up the Basic object
+    if (font) {
+        TTF_CloseFont(font);
+    }
+    TTF_Quit(); 
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    delete basicButton;
+    delete backButton;   
     delete basic;
     delete leaderBoard;
 
-    // Clean up SDL and TTF resources
-    clean();
 }   
     
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
@@ -147,17 +153,6 @@ void Game::WriteData(std::vector<PlayerData> playerData) {
         updatePlayerInCSV(Config::DataPath, player.name, player.totalBasic, player.totalBasicWins);
     }
 }
-
-void Game::clean() {
-    if (font) {
-        TTF_CloseFont(font);
-    }
-    TTF_Quit(); // Quit SDL_ttf
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
 
 void Game::renderMenu() { 
     basicButton->render();

@@ -12,6 +12,7 @@ struct Config {
     static inline int ScreenWidth = 1280;
     static inline int ScreenHeight = 720;
     static inline int FPS = 60; 
+    static inline const char* WindowTitle = "KoKoNut's Poker";
 
 
     // Card configuration
@@ -85,12 +86,9 @@ struct Config {
 
 
     // Other configurations
-    static inline const char* WindowTitle = "KoKoNut's Poker";
 };
 struct PlayerData {
     std::string name;
     int totalBasic;
     int totalBasicWins;
-
-    
 };

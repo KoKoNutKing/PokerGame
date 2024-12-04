@@ -12,7 +12,7 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
     getPlayerNameButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Next", font); // Start button
     startButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Start", font); // Start button
 
-    resultBox = new TextBox(Config::startButtonHeight, Config::startButtonWidth, 200, 50, font, renderer);
+    resultBox = new TextBox(Config::startButtonX, Config::ScreenHeight / 2, 200, 50, font, renderer);
 
 }
 
