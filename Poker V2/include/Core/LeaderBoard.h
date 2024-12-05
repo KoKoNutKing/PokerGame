@@ -1,5 +1,4 @@
-#ifndef LEADERBOARD_H
-#define LEADERBOARD_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -8,27 +7,22 @@
 #include <fstream>
 #include <sstream>
 
-#include "Core/Config.h" // For PlayerData and file path
+#include "Core/Config.h" 
 #include "Core/FileHandler.h"
 
-// Player data structure
 
 class LeaderBoard {
 public:
-    // Get player data from the CSV file
     void getData(const std::string& filename);
-
-    // Display the top 'n' players
-    void display(int n);
-
+    
     void mySort();
+
+    void display(int n);
 
 private:
     // Store player data
     std::vector<PlayerData> data;
 
     // Comparator to sort players by their score (totalBasicWins / totalBasic)
-    static bool scoreComparator();
 };
 
-#endif // LEADERBOARD_H

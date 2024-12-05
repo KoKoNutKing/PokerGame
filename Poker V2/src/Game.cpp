@@ -23,6 +23,11 @@ Game::~Game() {
     delete basic;
     delete leaderBoard;
 
+    if (bgMusic) {
+        Mix_FreeMusic(bgMusic);
+    }
+    Mix_CloseAudio();
+
 }   
     
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen) {
@@ -44,6 +49,19 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
             SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             std::cout << "renderer created" << std::endl;
         }
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) {
+            SDL_Log("Failed to initialize SDL_mixer: %s", Mix_GetError());
+            isRunning = false;
+            return;
+        }
+
+        // Load audio files
+        bgMusic = Mix_LoadMUS("resrc/backgroundMusic.mp3");
+        if (!bgMusic) {
+            SDL_Log("Failed to load background music: %s", Mix_GetError());
+        }
+
+
 
         // Initialize SDL_ttf
         if (TTF_Init() == -1) {
@@ -65,6 +83,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
         isRunning = false;
     }
     //Backgorund
+    if (bgMusic) {
+        Mix_PlayMusic(bgMusic, -1); // Play in a loop
+    }
+
     MenuBg = TextureManager::LoadTexture(Config::MenuPath, renderer);
     InitingBg = TextureManager::LoadTexture(Config::InitingPath, renderer);
 
@@ -106,17 +128,30 @@ void Game::handleEvents() {
                 mode = MENU;
             }
         }
+    } else if (mode == MENU) {
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+             if (basicButton->isClicked(event.button.x, event.button.y)) {
+                TextureManager::DrawTexture(InitingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+                SDL_RenderPresent(renderer);
+                if (basic) {
+                    delete basic;
+                    basic = nullptr;
+                }
+                basic = new Basic(renderer, font, event);
+                basic->initBasic();
 
+                mode = BASIC;
+            } else if (LeaderBoardButton->isClicked(event.button.x, event.button.y)) {
+                leaderBoard = new LeaderBoard;
+                leaderBoard->getData(Config::DataPath);
+                leaderBoard->display(5);
+            }
+        }
     }
 
     switch (event.type) {
         case SDL_QUIT:
             isRunning = false;
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            if (mode == MENU) {
-                handleMenuInput(event);
-            }
             break;
         default:
             break;
@@ -136,8 +171,8 @@ void Game::render() {
     //start rendering part
     if (mode == MENU) {
         TextureManager::DrawTexture(MenuBg, renderer, Config::BgSrcRect, Config::BgDestRect);
-        renderMenu();
-
+        basicButton->render();
+        LeaderBoardButton->render();
 
     } else if (mode == BASIC) {
         //renderBasic();
@@ -151,39 +186,6 @@ void Game::render() {
 void Game::WriteData(std::vector<PlayerData> playerData) {
     for (auto & player: playerData) {
         updatePlayerInCSV(Config::DataPath, player.name, player.totalBasic, player.totalBasicWins);
-    }
-}
-
-void Game::renderMenu() { 
-    basicButton->render();
-    LeaderBoardButton->render();
-
-}
-
-void Game::handleMenuInput(SDL_Event& event) {
-    switch (event.type) {
-        case SDL_QUIT: // Quit the game
-            isRunning = false;
-            break;
-
-        case SDL_MOUSEBUTTONDOWN: { // Handle mouse button clicks
-            if (basicButton->isClicked(event.button.x, event.button.y)) {
-                TextureManager::DrawTexture(InitingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
-                SDL_RenderPresent(renderer);
-                if (basic) {
-                    delete basic;
-                    basic = nullptr;
-                }
-                basic = new Basic(renderer, font, event);
-                basic->initBasic();
-
-                mode = BASIC;
-            } else if (LeaderBoardButton->isClicked(event.button.x, event.button.y)) {
-                leaderBoard = new LeaderBoard;
-                leaderBoard->getData(Config::DataPath);
-                leaderBoard->display(5);
-            }
-        }
     }
 }
 

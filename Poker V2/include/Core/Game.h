@@ -2,6 +2,7 @@
 
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
+#include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_ttf.h"
 
 #include "Core/Card.h"
@@ -39,6 +40,7 @@ public:
 
     void renderLoadingScreen(const std::string& message);
     void renderBackGround(const std::string& link);
+
     
 private:
     SDL_Window* window;
@@ -47,6 +49,8 @@ private:
 
     SDL_Texture* MenuBg;
     SDL_Texture* InitingBg;
+
+    Mix_Music* bgMusic; 
 
     SDL_Event event;
 
@@ -60,8 +64,6 @@ private:
     Button* LeaderBoardButton;
     Button* backButton;
 
-    void handleMenuInput(SDL_Event& event);
-    void renderMenu();
 
 
 };
