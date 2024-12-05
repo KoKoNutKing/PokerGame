@@ -9,6 +9,7 @@
 #include "Core/Player.h"
 #include "Core/TextureManager.h"
 #include "Core/Basic.h"
+#include "Core/FiveStud.h"
 #include "Core/FileHandler.h"
 #include "Core/LeaderBoard.h"
 
@@ -18,9 +19,10 @@
 #include "UI/InputBox.h"
 
 
-enum Mode {MENU, BASIC};
+enum Mode {MENU, BASIC, FIVESTUD};
 
 class Basic;
+class FiveStud;
 struct PlayerData;
 
 
@@ -48,6 +50,7 @@ private:
     TTF_Font* font;
 
     SDL_Texture* MenuBg;
+    SDL_Texture* FiveStudBg;
     SDL_Texture* InitingBg;
 
     Mix_Music* bgMusic; 
@@ -57,10 +60,12 @@ private:
     bool isRunning;
     Mode mode;
     Basic* basic;
+    FiveStud* fiveStud;
     LeaderBoard* leaderBoard;
 
 
     Button* basicButton;
+    Button* fiveCardButton;
     Button* LeaderBoardButton;
     Button* backButton;
 

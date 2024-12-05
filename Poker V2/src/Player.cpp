@@ -59,6 +59,10 @@ void Player::sortHand() {
     std::sort(hand.begin(), hand.end(), compareCards);
 }
 
+std::vector<Card> Player::getHand() {
+    return hand;
+}
+
 void Player::renderHand(SDL_Renderer* renderer) {
     sortHand();
     for (int i = 0; i < hand.size(); ++i) {
@@ -67,7 +71,8 @@ void Player::renderHand(SDL_Renderer* renderer) {
     }
 }
 
-std::pair<int, int> Player::evaluateHand() const {
+std::pair<int, int> Player::evaluateHand() {
+    sortHand();
     if (isFlush(hand) && isStraight(hand)) {
         return {9, hand.back().rank}; // Straight Flush
     }

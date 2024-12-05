@@ -1,7 +1,7 @@
-#include "Core/Basic.h"
+#include "Core/FiveStud.h"
 
-Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
-    : renderer(renderer), font(font), event(event), table(nullptr), deck(nullptr), numberOfPlayers(2), phrase(NUMBER) {
+FiveStud::FiveStud(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
+    : renderer(renderer), font(font), event(event), table(nullptr), deck(nullptr), numberOfPlayers(2), phrase(NUMBER1) {
 
 
     // Initialize input boxes and buttons
@@ -16,12 +16,15 @@ Basic::Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
 
 }
 
-Basic::~Basic() {
+FiveStud::~FiveStud() {
     // Cleanup dynamically allocated memory
     delete playerNumberBox;
     for (auto& box : playerNameBoxes) {
         delete box;
     }
+    playerNameBoxes.clear();
+
+    
 
     for (auto& player : players) {
         delete player;
@@ -37,45 +40,43 @@ Basic::~Basic() {
 
 
 
-void Basic::initBasic() {
-    // Initialize slots and other components
-    basicSlots = {
+void FiveStud::initFiveStud() {
+    fiveStudSlots = {
         {50, 50, nullptr}, {50, 175, nullptr}, {50, 300, nullptr}, {50, 425, nullptr}, {50, 550, nullptr}
     };
     
     //background
-    BasicGetPlBg = TextureManager::LoadTexture(Config::BasicGetPlPath, renderer);
-    BasicGetNumBg = TextureManager::LoadTexture(Config::BasicGetNumPath, renderer);
-    BasicPlayingBg = TextureManager::LoadTexture(Config::BasicPlayingPath, renderer);
+    FiveStudGetPlBg = TextureManager::LoadTexture(Config::BasicGetPlPath, renderer);
+    FiveStudGetNumBg = TextureManager::LoadTexture(Config::BasicGetNumPath, renderer);
+    FiveStudPlayingBg = TextureManager::LoadTexture(Config::BasicPlayingPath, renderer);
+
 
     if (table) {
-        delete table; // Clean up any existing table
+        delete table; 
     }
     players = {};
-    table = new Table(basicSlots); 
+    table = new Table(fiveStudSlots); 
     deck = new Deck(renderer);
     deck->createDeck();
 
-
-
     
 }
-void Basic::update() {
+void FiveStud::update() {
 
 }
 
-void Basic::render() {
+void FiveStud::render() {
     switch (phrase)
     {
     case NUMBER:
-        TextureManager::DrawTexture(BasicGetNumBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+        TextureManager::DrawTexture(FiveStudGetNumBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         playerNumberBox->render();   
         addPlayerButton->render();   
         subPlayerButton->render();   
         getPlayerNumButton->render();
         break;
     case PLAYER:
-        TextureManager::DrawTexture(BasicGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+        TextureManager::DrawTexture(FiveStudGetPlBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         for (auto& playerBox : playerNameBoxes) {
             playerBox->render();
         }
@@ -83,13 +84,14 @@ void Basic::render() {
         break;
     case START:
         // Handle start button click
-        TextureManager::DrawTexture(BasicPlayingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+        TextureManager::DrawTexture(FiveStudPlayingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
 
         startButton->render();
         table->render(renderer);
         for (auto & box : playerNameDrawer) {
             box->render();
         }
+        renderSharedCard();
         resultBox->render();
         break;
     default:
@@ -97,7 +99,7 @@ void Basic::render() {
     }
 }
 
-void Basic::getPlayer(const std::string& name) {
+void FiveStud::getPlayer(const std::string& name) {
     if (!name.empty()) {
         Player* newPlayer = new Player(renderer, Config::DefaultAva, 25, 25);
         newPlayer->setName(name);
@@ -105,8 +107,7 @@ void Basic::getPlayer(const std::string& name) {
     }
 }
 
-void Basic::handleInput() {
-    // Handle input for number of players
+void FiveStud::handleInput() {
     switch (phrase)
     {
     case NUMBER:
@@ -120,7 +121,7 @@ void Basic::handleInput() {
             playerNumberBox->setText(std::to_string(numberOfPlayers));
             if (getPlayerNumButton->isClicked(event.button.x, event.button.y)) {
                 addNameBox();
-                phrase = PLAYER;
+                phrase = PLAYER1;
             }
         }
         break;
@@ -132,7 +133,7 @@ void Basic::handleInput() {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (getPlayerNameButton->isClicked(event.button.x, event.button.y)) {
                 createTable();
-                phrase = START;
+                phrase = START1;
             }
         }
         break;
@@ -151,11 +152,10 @@ void Basic::handleInput() {
 }
 
 //game rule
-void Basic::dealHand(Deck& deck, Player* player, int& deckIndex) {
-    const int handSize = 5; // Number of cards to deal
+void FiveStud::dealHand(Deck& deck, Player* player, int& deckIndex) {
+    const int handSize = 2; // Number of cards to deal
     for (int i = 0; i < handSize; ++i) {
         Card* card = deck.drawCard(deckIndex);
-        //Card* card = new Card(renderer, 0, 0, DIAMONDS, THREE);
         if (card) {
             // Use the card
             player->addCard(*card);
@@ -167,9 +167,15 @@ void Basic::dealHand(Deck& deck, Player* player, int& deckIndex) {
 }
 
 
-int Basic::compareHands(Player& p1, Player& p2) {
-    std::pair<int, int> hand1 = p1.evaluateHand();
-    std::pair<int, int> hand2 = p2.evaluateHand();
+int FiveStud::compareHands(const Player& p1, const Player& p2) {
+    Player tmp1 = p1;
+    Player tmp2 = p2;
+    for (int i = 0; i < 3; ++i) {
+        tmp1.addCard(sharedCard[i]);
+        tmp2.addCard(sharedCard[i]);
+    }
+    std::pair<int, int> hand1 = tmp1.evaluateHand();
+    std::pair<int, int> hand2 = tmp2.evaluateHand();
     if (hand1.first > hand2.first) {
         return 1;
     }
@@ -186,7 +192,15 @@ int Basic::compareHands(Player& p1, Player& p2) {
     return 0;
 }
 
-void Basic::determineAndDisplayWinner() {
+void FiveStud::renderSharedCard() {
+        for (int i = 0; i < sharedCard.size(); ++i) {
+        sharedCard[i].update(Config::ScreenWidth / 2 - 150 + 150 * i, Config::ScreenHeight / 2); // may change
+        sharedCard[i].render();
+    }
+}
+
+
+void FiveStud::determineAndDisplayWinner() {
     Player* winner = players[0];
     bool tie = false;
 
@@ -211,7 +225,8 @@ void Basic::determineAndDisplayWinner() {
     resultBox->setText(resultMessage);
 }
 
-void Basic::start() {
+void FiveStud::start() {
+    sharedCard.clear();
     for (auto& player : players) {
         if (player) {
             player->resetHand();
@@ -232,6 +247,17 @@ void Basic::start() {
     deck->shuffleDeck();
     int deckIndex = 0;
     
+    for (int i = 0; i < 3; ++i) {
+        Card* card = deck->drawCard(deckIndex);
+        if (card) {
+            // Use the card
+            sharedCard.push_back(*card);
+            deckIndex++;
+        } else {
+            std::cerr << "Error: Card draw failed!" << std::endl; //debug
+        }
+    }
+
     for (auto& player : players) {
         if (player) {
             dealHand(*deck, player, deckIndex);
@@ -243,21 +269,21 @@ void Basic::start() {
     determineAndDisplayWinner();
 }
 
-void Basic::addNameBox() {
+void FiveStud::addNameBox() {
     playerNameBoxes.clear();
     for (int i = 0; i < numberOfPlayers; ++i) {
         playerNameBoxes.push_back(new InputBox(Config::ScreenWidth / 2 - 100, 200 + (i * 60), 200, 50, font, renderer));
-        playerNameDrawer.push_back(new TextBox(50, basicSlots[i].y + 100, 200, 50, font, renderer));
+        playerNameDrawer.push_back(new TextBox(50, fiveStudSlots[i].y + 100, 200, 50, font, renderer));
 
     }
-    phrase = PLAYER;
+    phrase = PLAYER1;
     
 }
 
-void Basic::createTable() {
+void FiveStud::createTable() {
     dataSaver.clear();
     if (table == nullptr) {
-        table = new Table(basicSlots);
+        table = new Table(fiveStudSlots);
     }
 
     for (int i = 0; i < numberOfPlayers; ++i) {
@@ -270,11 +296,11 @@ void Basic::createTable() {
     }
 }
 
-void Basic::updateData(std::vector<PlayerData> &data, std::string winnerName) {
+void FiveStud::updateData(std::vector<PlayerData> &data, std::string winnerName) {
     for (auto & player: data) {
         if (player.name == winnerName) {
-            player.totalBasicWins += 1;
+            player.totalFiveWins += 1;
             }
-        player.totalBasic += 1;
+        player.totalFive += 1;
     }
 }

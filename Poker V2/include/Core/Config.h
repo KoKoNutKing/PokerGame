@@ -36,6 +36,7 @@ struct Config {
     static inline const char* BasicGetNumPath = "resrc\\BasicGetNumPath.png";
     static inline const char* BasicGetPlPath = "resrc\\BasicGetPlPath.png";
     static inline const char* BasicPlayingPath = "resrc\\BasicPlaying.png";
+    static inline const char* FiveStudPath = "resrc\\updateSoon.png";
 
 
     // TextBox settings
@@ -45,15 +46,15 @@ struct Config {
     static inline int playerNumberBoxY = 100;
 
     // Menu Button settings
-    static inline int basicButtonWidth = 200;
-    static inline int basicButtonHeight = 75;
-    static inline int basicButtonX = ScreenWidth / 2 - basicButtonWidth / 2;
-    static inline int basicButtonY = ScreenHeight * 0.7;
+    static inline int midButtonWidth = 200;
+    static inline int midButtonHeight = 75;
+    static inline int midButtonX = ScreenWidth / 2 - midButtonWidth / 2;
+    static inline int midButtonY = ScreenHeight * 0.7;
 
     static inline int backButtonWidth = 200;
     static inline int backButtonHeight = 75;
-    static inline int backButtonX = ScreenWidth * 0.9 - basicButtonWidth / 2;
-    static inline int backButtonY = ScreenHeight * 0.9- basicButtonHeight / 2;
+    static inline int backButtonX = ScreenWidth * 0.9 - midButtonWidth / 2;
+    static inline int backButtonY = ScreenHeight * 0.9- midButtonHeight / 2;
 
 
     // Button settings
@@ -91,4 +92,7 @@ struct PlayerData {
     std::string name;
     int totalBasic;
     int totalBasicWins;
+
+    int totalFive;
+    int totalFiveWins;
 };

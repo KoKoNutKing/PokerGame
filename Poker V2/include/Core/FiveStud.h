@@ -17,7 +17,7 @@
 #include "UI/Button.h"
 #include "UI/TextBox.h"
 
-enum Phrase {NUMBER, PLAYER, START};
+enum Phrase5Stud {NUMBER1, PLAYER1, START1};
 
 
 class Table;
@@ -26,25 +26,28 @@ struct PlayerData;
 struct Slot;
 class Deck;
 
-class Basic {
+class FiveStud {
 public:
-    Basic(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event);
-    ~Basic();
+    FiveStud(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event);
+    ~FiveStud();
 
-    void initBasic(); // Initializes the game mode
+    void initFiveStud(); 
 
     void update();
-    void render(); // Renders the table and its contents
+    void render(); 
 
-    void handleInput(); // Handle input for the game
+    void handleInput(); 
 
-    void getPlayer(const std::string& name); // Create a player with a name
+    void getPlayer(const std::string& name); 
 
     //Game rule
-    int compareHands(Player& p1, Player& p2);
+    int compareHands(const Player& p1, const Player& p2);
+
+    void renderSharedCard();
+
     void determineAndDisplayWinner();
     void dealHand(Deck& deck, Player* player, int& deckIndex);
-    void start(); // Start the game after player names are entered
+    void start();
 
     //Suportive Function (do sth when button click)
     void addNameBox();
@@ -60,9 +63,9 @@ private:
     TTF_Font* font;
     SDL_Event& event;
 
-    SDL_Texture* BasicGetNumBg;
-    SDL_Texture* BasicGetPlBg;
-    SDL_Texture* BasicPlayingBg;
+    SDL_Texture* FiveStudGetNumBg;
+    SDL_Texture* FiveStudGetPlBg;
+    SDL_Texture* FiveStudPlayingBg;
 
     TextBox* playerNumberBox; // Box for number of players
     std::vector<InputBox*> playerNameBoxes; // Boxes for player names
@@ -78,10 +81,12 @@ private:
     int numberOfPlayers;
     std::vector<Player*> players;
     Table* table; 
-    std::vector<Slot> basicSlots;
+    std::vector<Slot> fiveStudSlots;
     Deck* deck;
 
-    Phrase phrase;
+    std::vector<Card> sharedCard;
+
+    Phrase5Stud phrase;
 };
 
 

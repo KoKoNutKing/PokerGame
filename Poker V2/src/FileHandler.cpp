@@ -19,15 +19,19 @@ vector<PlayerData> readFromCSV(const string& fileName) {
     string line;
     while (getline(file, line)) {
         istringstream iss(line);
-        string name, matchesStr, winsStr;
+        string name, basic, basicWin, five, fivewin;
 
         if (getline(iss, name, ',') &&
-            getline(iss, matchesStr, ',') &&
-            getline(iss, winsStr)) {
+            getline(iss, basic, ',') &&
+            getline(iss, basicWin, ',') &&
+            getline(iss, five, ',') &&
+            getline(iss, fivewin)) {
             PlayerData player;
             player.name = name;
-            player.totalBasic = stoi(matchesStr);
-            player.totalBasicWins = stoi(winsStr);
+            player.totalBasic = stoi(basic);
+            player.totalBasicWins = stoi(basicWin);
+            player.totalFive = stoi(five);
+            player.totalFiveWins = stoi(fivewin);
             players.push_back(player);
         }
     }
@@ -45,22 +49,25 @@ void writeToCSV(const string& fileName, const vector<PlayerData>& players) {
     }
 
     for (const auto& player : players) {
-        file << player.name << "," << player.totalBasic << "," << player.totalBasicWins << "\n";
+        file << player.name << "," << player.totalBasic << "," << player.totalBasicWins 
+                            << "," << player.totalFive << "," << player.totalFiveWins <<"\n";
     }
 
     file.close();
 }
 
 // Update or add a new player in the CSV file
-void updatePlayerInCSV(const string& fileName, const string& playerName, int matches, int wins) {
+void updatePlayerInCSV(const string& fileName, const string& playerName, int basic, int basicWins, int five, int fiveWins) {
     vector<PlayerData> players = readFromCSV(fileName);
 
     // Check if the player already exists
     bool found = false;
     for (auto& player : players) {
         if (player.name == playerName) {
-            player.totalBasic += matches;
-            player.totalBasicWins += wins;
+            player.totalBasic += basic;
+            player.totalBasicWins += basicWins;
+            player.totalFive += five;
+            player.totalFiveWins += fiveWins;
             found = true;
             break;
         }
@@ -68,7 +75,7 @@ void updatePlayerInCSV(const string& fileName, const string& playerName, int mat
 
     // If not found, add a new player
     if (!found) {
-        players.push_back({playerName, matches, wins});
+        players.push_back({playerName, basic, basicWins, five, fiveWins});
     }
 
     // Write updated data back to the file

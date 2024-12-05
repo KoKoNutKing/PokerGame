@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <iostream>
@@ -14,7 +15,7 @@
 class LeaderBoard {
 public:
     void getData(const std::string& filename);
-    
+
     void mySort();
 
     void display(int n);

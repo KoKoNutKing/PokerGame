@@ -13,6 +13,6 @@ std::vector<PlayerData> readFromCSV(const std::string& fileName);
 void writeToCSV(const std::string& fileName, const std::vector<PlayerData>& players);
 
 // Function to update or add a new player in the CSV file
-void updatePlayerInCSV(const std::string& fileName, const std::string& playerName, int matches, int wins);
+void updatePlayerInCSV(const std::string& fileName, const std::string& playerName, int basic, int basicWins, int five, int fiveWins);
 
 #endif // FILEHANDLER_H

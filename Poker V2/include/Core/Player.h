@@ -33,8 +33,9 @@ public:
     void addCard(const Card &card);
     void resetHand();
     void sortHand();
+    std::vector<Card> getHand();
     void renderHand(SDL_Renderer* renderer);
-    std::pair<int, int> evaluateHand() const;
+    std::pair<int, int> evaluateHand();
 
     // Manage Score
     // void addScore(int points);

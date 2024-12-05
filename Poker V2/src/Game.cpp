@@ -88,20 +88,28 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
     MenuBg = TextureManager::LoadTexture(Config::MenuPath, renderer);
+    FiveStudBg = TextureManager::LoadTexture(Config::FiveStudPath, renderer);
     InitingBg = TextureManager::LoadTexture(Config::InitingPath, renderer);
 
     basicButton = new Button(renderer, 
-                            Config::basicButtonX, 
-                            Config::basicButtonY, 
-                            Config::basicButtonWidth, 
-                            Config::basicButtonHeight, 
+                            Config::midButtonX - 250, 
+                            Config::midButtonY, 
+                            Config::midButtonWidth, 
+                            Config::midButtonHeight, 
                             "Basic", 
                             font);
+    fiveCardButton = new Button(renderer, 
+                            Config::midButtonX, 
+                            Config::midButtonY, 
+                            Config::midButtonWidth, 
+                            Config::midButtonHeight, 
+                            "5-Card Stud", 
+                            font);
     LeaderBoardButton = new Button(renderer, 
-                            Config::basicButtonX + 250, 
-                            Config::basicButtonY, 
-                            Config::basicButtonWidth, 
-                            Config::basicButtonHeight, 
+                            Config::midButtonX + 250, 
+                            Config::midButtonY, 
+                            Config::midButtonWidth, 
+                            Config::midButtonHeight, 
                             "Leader Board", 
                             font);
     backButton = new Button(renderer,
@@ -111,7 +119,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
                              Config::backButtonHeight, 
                              "Back", 
                              font);
-    // test = new InputBox(100, 100, 600, 50, font, renderer);
 
 
 
@@ -125,6 +132,14 @@ void Game::handleEvents() {
         if (event.type == SDL_MOUSEBUTTONDOWN) {
             if (backButton->isClicked(event.button.x, event.button.y)) {
                 WriteData(basic->dataSaver); // Save data before switching
+                mode = MENU;
+            }
+        } 
+    } else if (mode == FIVESTUD) {
+        fiveStud->handleInput();
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            if (backButton->isClicked(event.button.x, event.button.y)) {
+                WriteData(fiveStud->dataSaver); // Save data before switching
                 mode = MENU;
             }
         }
@@ -141,13 +156,20 @@ void Game::handleEvents() {
                 basic->initBasic();
 
                 mode = BASIC;
+            } else if (fiveCardButton->isClicked(event.button.x, event.button.y)) {
+                TextureManager::DrawTexture(InitingBg, renderer, Config::BgSrcRect, Config::BgDestRect);
+                SDL_RenderPresent(renderer);
+                fiveStud = new FiveStud(renderer, font, event);
+                fiveStud->initFiveStud();
+
+                mode = FIVESTUD;
             } else if (LeaderBoardButton->isClicked(event.button.x, event.button.y)) {
                 leaderBoard = new LeaderBoard;
                 leaderBoard->getData(Config::DataPath);
-                leaderBoard->display(5);
+                leaderBoard->display(5); //display 5 top player
             }
         }
-    }
+    } 
 
     switch (event.type) {
         case SDL_QUIT:
@@ -163,6 +185,9 @@ void Game::update() {
     } else if (mode == BASIC) {
         basic->update();  // Update Basic
 
+    } else if (mode == FIVESTUD) {
+        fiveStud->update();  
+
     }
 }
 
@@ -172,11 +197,14 @@ void Game::render() {
     if (mode == MENU) {
         TextureManager::DrawTexture(MenuBg, renderer, Config::BgSrcRect, Config::BgDestRect);
         basicButton->render();
+        fiveCardButton->render();
         LeaderBoardButton->render();
 
     } else if (mode == BASIC) {
-        //renderBasic();
         basic->render();
+        backButton->render();
+    } else if (mode == FIVESTUD) {
+        fiveStud->render();
         backButton->render();
     }
     //
@@ -185,7 +213,7 @@ void Game::render() {
 
 void Game::WriteData(std::vector<PlayerData> playerData) {
     for (auto & player: playerData) {
-        updatePlayerInCSV(Config::DataPath, player.name, player.totalBasic, player.totalBasicWins);
+        updatePlayerInCSV(Config::DataPath, player.name, player.totalBasic, player.totalBasicWins, player.totalFive, player.totalFiveWins);
     }
 }
 
