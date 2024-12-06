@@ -22,12 +22,11 @@ public:
     std::string getText() const;
 
 private:
-    int x, y, w, h;  // Position and size of the text box
     SDL_Renderer* renderer;
-    TTF_Font* font;
-    SDL_Color textColor;
-    SDL_Texture* textTexture;  // Texture to hold the rendered text
     SDL_Rect textRect;  // The rectangle for the text position
-    
+    SDL_Color textColor;
     std::string text;  // The current text in the TextBox
+    SDL_Texture* textTexture;  // Texture to hold the rendered text
+    TTF_Font* font;
+    
 };

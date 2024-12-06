@@ -21,15 +21,12 @@ Button::~Button() {
 }
 
 void Button::render() {
-    // Render the button rectangle
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
     SDL_RenderFillRect(renderer, &rect);
 
-    // Render the button outline
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black outline
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Black
     SDL_RenderDrawRect(renderer, &rect);
 
-    // Render the text in the center of the button
     if (textTexture) {
         int textWidth, textHeight;
         SDL_QueryTexture(textTexture, nullptr, nullptr, &textWidth, &textHeight);

@@ -12,7 +12,7 @@ FiveStud::FiveStud(SDL_Renderer* renderer, TTF_Font* font, SDL_Event& event)
     getPlayerNameButton = new Button(renderer, Config::midButtonX, Config::midButtonY, Config::midButtonWidth, Config::midButtonHeight, "Next", font); // Start button
     startButton = new Button(renderer, Config::startButtonX, Config::startButtonY, Config::startButtonWidth, Config::startButtonHeight, "Start", font); // Start button
 
-    resultBox = new TextBox(Config::startButtonX, Config::ScreenHeight / 2, 200, 50, font, renderer);
+    resultBox = new TextBox(Config::ScreenWidth / 2 - 100, Config::ScreenHeight * 0.8, 200, 50, font, renderer);
 
 }
 
@@ -42,7 +42,7 @@ FiveStud::~FiveStud() {
 
 void FiveStud::initFiveStud() {
     fiveStudSlots = {
-        {50, 50, nullptr}, {50, 175, nullptr}, {50, 300, nullptr}, {50, 425, nullptr}, {50, 550, nullptr}
+        {450, 50, nullptr}, {50, 175, nullptr}, {850, 175, nullptr}, {100, 550, nullptr}, {650, 550, nullptr}
     };
     
     //background
@@ -194,7 +194,7 @@ int FiveStud::compareHands(const Player& p1, const Player& p2) {
 
 void FiveStud::renderSharedCard() {
         for (int i = 0; i < sharedCard.size(); ++i) {
-        sharedCard[i].update(Config::ScreenWidth / 2 - 150 + 150 * i, Config::ScreenHeight / 2); // may change
+        sharedCard[i].update(Config::ScreenWidth / 2 - 150 + 125 * i, Config::ScreenHeight / 2 - 50); // may change
         sharedCard[i].render();
     }
 }
@@ -273,7 +273,7 @@ void FiveStud::addNameBox() {
     playerNameBoxes.clear();
     for (int i = 0; i < numberOfPlayers; ++i) {
         playerNameBoxes.push_back(new InputBox(Config::ScreenWidth / 2 - 100, 200 + (i * 60), 200, 50, font, renderer));
-        playerNameDrawer.push_back(new TextBox(50, fiveStudSlots[i].y + 100, 200, 50, font, renderer));
+        playerNameDrawer.push_back(new TextBox(fiveStudSlots[i].x, fiveStudSlots[i].y + 100, 200, 50, font, renderer));
 
     }
     phrase = PLAYER1;

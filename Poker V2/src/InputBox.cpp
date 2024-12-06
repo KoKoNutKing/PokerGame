@@ -47,32 +47,28 @@ void InputBox::handleEvents(SDL_Event& event) {
         int mouseX = event.button.x;
         int mouseY = event.button.y;
         if (mouseX > boxRect.x && mouseX < boxRect.x + boxRect.w && mouseY > boxRect.y && mouseY < boxRect.y + boxRect.h) {
-            isActive = true;  // Activate the input box when clicked
+            isActive = true;
         } else {
-            isActive = false;  // Deactivate the input box if clicked outside
+            isActive = false;
         }
     }
 
     // Handle key events (typing)
     if (event.type == SDL_KEYDOWN && isActive) {
         if (event.key.keysym.sym == SDLK_BACKSPACE && !text.empty()) {
-            // Remove the last character when backspace is pressed
             text.pop_back();
         } else if (event.key.keysym.sym == SDLK_RETURN) {
-            // Submit the text when Enter is pressed
-            isActive = false;  // Optionally deactivate after pressing enter
-
+            isActive = false; 
         } else if (event.key.keysym.sym >= SDLK_SPACE && event.key.keysym.sym <= SDLK_z) {
             text += static_cast<char>(event.key.keysym.sym);
         }
     }
 
-    // Update the texture for the typed text
     updateTextTexture();
 }
 
 std::string InputBox::getText() const {
-    return text.empty() ? " " : text;  // Return a space if text is empty
+    return text.empty() ? " " : text;  
 }
 
 void InputBox::updateTextTexture() {

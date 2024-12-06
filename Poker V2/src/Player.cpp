@@ -22,6 +22,18 @@ Player::Player(SDL_Renderer* renderer, const std::string& texturePath, int x, in
 Player::~Player() {
     if (playerTexture) {
         SDL_DestroyTexture(playerTexture); // Destroy the texture when the player is destroyed
+        playerTexture = nullptr;
+    }
+}
+
+void Player::setAvatar(const std::string& avatarPath) {
+    if (playerTexture) {
+        SDL_DestroyTexture(playerTexture);
+        playerTexture = nullptr;
+    }
+    playerTexture = TextureManager::LoadTexture(avatarPath.c_str(), renderer);
+    if (!playerTexture) {
+        std::cerr << "Failed to load avatar texture: " << avatarPath << std::endl;
     }
 }
 
@@ -66,7 +78,7 @@ std::vector<Card> Player::getHand() {
 void Player::renderHand(SDL_Renderer* renderer) {
     sortHand();
     for (int i = 0; i < hand.size(); ++i) {
-        hand[i].update(destRect.x + 150 + 150 * i, destRect.y - 25); // may change
+        hand[i].update(destRect.x + 150 + 125 * i, destRect.y - 25); // may change
         hand[i].render();
     }
 }

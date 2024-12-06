@@ -23,6 +23,7 @@ public:
     void update();
     void render(SDL_Renderer* renderer);
 
+    void setAvatar(const std::string& avatarPath);
 
     void setName(const std::string& input);
     std::string getName();
@@ -37,9 +38,7 @@ public:
     void renderHand(SDL_Renderer* renderer);
     std::pair<int, int> evaluateHand();
 
-    // Manage Score
-    // void addScore(int points);
-    // int getScore() const;
+
 
 private:
     std::string name;      // Player name

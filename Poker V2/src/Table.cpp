@@ -24,7 +24,8 @@ void Table::addPlayer(Player* player, int slotIndex) {
 
 void Table::render(SDL_Renderer* renderer) {
     for (const Slot& slot : slots) {
-        if (slot.player) {
+        if (slot.player) {            
+            slot.player->setAvatar(Config::DefaultAva);
             slot.player->render(renderer);    
             slot.player->renderHand(renderer); // Render the player
         }
